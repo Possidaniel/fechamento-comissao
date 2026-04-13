@@ -1,0 +1,1869 @@
+<!DOCTYPE html>
+<!-- saved from url=(0089)file:///C:/Users/daniel.possi/Downloads/Relat%C3%B3rio_de_Comiss%C3%B5es_corrigido_2.html -->
+<html lang="pt-BR"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Relatório de Comissões</title>
+<script src="./Relatório de Comissões teste 7_files/xlsx.full.min.js.baixados"></script>
+<script src="./Relatório de Comissões teste 7_files/jspdf.umd.min.js.baixados"></script>
+<script src="./Relatório de Comissões teste 7_files/jspdf.plugin.autotable.min.js.baixados"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@300;400;500&display=swap');
+
+  :root {
+    --bg: #0d0f14;
+    --surface: #141720;
+    --border: #1e2330;
+    --accent: #e8ff47;
+    --accent2: #47c8ff;
+    --text: #e8eaf0;
+    --muted: #5a6078;
+    --success: #47ffb0;
+    --danger: #ff6b6b;
+    --card-bg: #161b26;
+    --parceria: #ff9f47;
+    --proprio: #47c8ff;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Syne', sans-serif;
+    min-height: 100vh;
+  }
+
+  /* HEADER */
+  header {
+    padding: 28px 40px 24px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    background: linear-gradient(135deg, #0d0f14 0%, #141a22 100%);
+  }
+  .logo-mark {
+    width: 42px; height: 42px;
+    background: var(--accent);
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 800; font-size: 18px; color: #000;
+    flex-shrink: 0;
+  }
+  header h1 { font-size: 20px; font-weight: 700; letter-spacing: -0.3px; }
+  header p { font-size: 12px; color: var(--muted); font-family: 'DM Mono', monospace; margin-top: 2px; }
+  .header-right { margin-left: auto; display: flex; gap: 12px; align-items: center; }
+  #periodo-badge {
+    background: var(--border);
+    border: 1px solid var(--border);
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-family: 'DM Mono', monospace;
+    color: var(--muted);
+    display: none;
+  }
+
+  /* DROP ZONE */
+  #drop-section {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: calc(100vh - 89px);
+    padding: 40px;
+  }
+  #drop-zone {
+    border: 2px dashed var(--border);
+    border-radius: 24px;
+    width: 100%;
+    max-width: 560px;
+    padding: 80px 40px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    background: var(--surface);
+    position: relative;
+    overflow: hidden;
+  }
+  #drop-zone::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at 50% 0%, rgba(232,255,71,0.04) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  #drop-zone.drag-over {
+    border-color: var(--accent);
+    background: rgba(232,255,71,0.04);
+    transform: scale(1.01);
+  }
+  .drop-icon { font-size: 52px; margin-bottom: 20px; display: block; filter: grayscale(0.3); }
+  #drop-zone h2 { font-size: 22px; font-weight: 700; margin-bottom: 10px; }
+  #drop-zone p { font-size: 13px; color: var(--muted); line-height: 1.6; }
+  .drop-hint {
+    margin-top: 28px;
+    display: inline-flex; align-items: center; gap: 8px;
+    background: var(--border);
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-family: 'DM Mono', monospace;
+    color: var(--muted);
+  }
+  #file-input { display: none; }
+
+  /* LOADING */
+  #loading {
+    display: none;
+    position: fixed; inset: 0;
+    background: rgba(13,15,20,0.92);
+    align-items: center; justify-content: center;
+    z-index: 100;
+    flex-direction: column; gap: 16px;
+  }
+  .spinner {
+    width: 44px; height: 44px;
+    border: 3px solid var(--border);
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  #loading p { font-size: 14px; color: var(--muted); font-family: 'DM Mono', monospace; }
+
+  /* MAIN APP */
+  #app-section { display: none; padding: 0 0 60px; }
+
+  /* SUMMARY BAR */
+  #summary-bar {
+    padding: 20px 40px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    display: flex; gap: 32px; align-items: center;
+    flex-wrap: wrap;
+  }
+  .stat { display: flex; flex-direction: column; gap: 2px; }
+  .stat-label { font-size: 10px; color: var(--muted); font-family: 'DM Mono', monospace; text-transform: uppercase; letter-spacing: 0.8px; }
+  .stat-value { font-size: 20px; font-weight: 700; }
+  .stat-value.accent { color: var(--accent); }
+  .stat-value.accent2 { color: var(--accent2); }
+  .sep { width: 1px; height: 40px; background: var(--border); }
+
+  /* CONTROLS */
+  #controls {
+    padding: 20px 40px;
+    display: flex; gap: 12px; align-items: center;
+    flex-wrap: wrap;
+  }
+  #search-input {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 10px 16px;
+    border-radius: 10px;
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+    width: 300px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  #search-input:focus { border-color: var(--accent); }
+  #search-input::placeholder { color: var(--muted); }
+
+  .btn {
+    padding: 10px 18px;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--text);
+    font-family: 'Syne', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex; align-items: center; gap: 7px;
+  }
+  .btn:hover { border-color: var(--accent); color: var(--accent); }
+  .btn.active { background: var(--accent); color: #000; border-color: var(--accent); }
+
+  #sort-select {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 10px 16px;
+    border-radius: 10px;
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+    outline: none;
+    cursor: pointer;
+  }
+
+  .results-count { margin-left: auto; font-size: 12px; color: var(--muted); font-family: 'DM Mono', monospace; }
+
+  /* GRID */
+  #vendors-grid {
+    padding: 0 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  /* VENDOR CARD */
+  .vendor-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    overflow: visible;
+    transition: border-color 0.2s;
+    animation: fadeUp 0.3s ease both;
+    position: relative;
+  }
+  .vendor-card-body { border-radius: 0 0 16px 16px; overflow: hidden; }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(12px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .vendor-card:hover { border-color: #2a3045; }
+
+  /* Julio special card */
+  .vendor-card.julio-card {
+    border-color: rgba(232,255,71,0.3);
+    box-shadow: 0 0 0 1px rgba(232,255,71,0.1), 0 4px 32px rgba(232,255,71,0.05);
+  }
+  .vendor-card.julio-card:hover { border-color: rgba(232,255,71,0.5); }
+
+  /* CARD HEADER */
+  .card-header {
+    padding: 16px 20px 14px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+    user-select: none;
+  }
+  .vendor-avatar {
+    width: 42px; height: 42px;
+    border-radius: 11px;
+    background: linear-gradient(135deg, #1e2540, #2a3555);
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 16px;
+    color: var(--accent);
+    flex-shrink: 0;
+    border: 1px solid #2a3555;
+  }
+  .vendor-avatar.gerente {
+    background: linear-gradient(135deg, #1e3040, #0a4060);
+    color: var(--accent2);
+    border-color: #1a4060;
+  }
+  .vendor-info { flex: 1; min-width: 0; }
+  .vendor-code {
+    font-size: 10px; color: var(--muted);
+    font-family: 'DM Mono', monospace; margin-bottom: 4px;
+    display: flex; align-items: center; gap: 6px; flex-wrap: wrap;
+  }
+  .vendor-name { font-size: 15px; font-weight: 700; color: var(--text); line-height: 1.2; margin-bottom: 3px; word-break: break-word; }
+  .vendor-email { font-size: 11px; color: var(--muted); font-family: 'DM Mono', monospace; }
+  .card-actions { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+  .toggle-btn {
+    width: 30px; height: 30px;
+    border-radius: 8px;
+    background: var(--border);
+    border: none;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    color: var(--muted);
+    font-size: 13px;
+    transition: all 0.2s;
+    flex-shrink: 0;
+  }
+  .toggle-btn:hover { background: var(--accent); color: #000; }
+  .toggle-btn.open { background: rgba(232,255,71,0.1); color: var(--accent); }
+
+  /* METRICS STRIP */
+  .card-metrics-row {
+    display: flex;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    overflow-x: auto;
+    background: rgba(0,0,0,0.15);
+  }
+  .metric {
+    padding: 10px 18px;
+    text-align: center;
+    border-right: 1px solid var(--border);
+    flex: 1;
+    min-width: 110px;
+    white-space: nowrap;
+  }
+  .metric:last-child { border-right: none; }
+  .metric-label { font-size: 9px; color: var(--muted); font-family: 'DM Mono', monospace; text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 4px; }
+  .metric-value { font-size: 14px; font-weight: 700; }
+  .metric-value.green  { color: var(--success); }
+  .metric-value.yellow { color: var(--accent); }
+  .metric-value.red    { color: var(--danger); }
+  .metric-value.blue   { color: var(--accent2); }
+  .metric-value.orange { color: var(--parceria); }
+
+  .badge-danger { color: var(--danger); background: rgba(255,107,107,0.12); padding: 1px 7px; border-radius: 4px; font-size: 9px; font-weight: 600; }
+  .badge-accent { color: var(--accent); background: rgba(232,255,71,0.12); padding: 1px 7px; border-radius: 4px; font-size: 9px; font-weight: 600; }
+  .badge-gerente { color: var(--accent2); background: rgba(71,200,255,0.15); padding: 2px 8px; border-radius: 4px; font-size: 9px; font-weight: 700; letter-spacing: 0.5px; }
+  .metric-final { background: rgba(71,255,176,0.04); }
+
+  /* JULIO SPLIT BLOCKS */
+  .julio-split-wrap {
+    overflow: hidden;
+    max-height: 0;
+    transition: max-height 0.4s ease;
+  }
+  .julio-split-wrap.open { max-height: 99999px; }
+
+  .julio-block {
+    border-bottom: 1px solid var(--border);
+  }
+  .julio-block:last-child { border-bottom: none; }
+
+  .julio-block-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 20px;
+    background: rgba(0,0,0,0.2);
+    cursor: pointer;
+    user-select: none;
+    border-bottom: 1px solid var(--border);
+  }
+  .julio-block-header:hover { background: rgba(255,255,255,0.03); }
+
+  .julio-block-title {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+  .julio-block-title.proprio { color: var(--proprio); }
+  .julio-block-title.parceria { color: var(--parceria); }
+
+  .julio-block-icon {
+    font-size: 16px;
+  }
+
+  .julio-block-stats {
+    display: flex;
+    gap: 20px;
+    margin-left: auto;
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+  }
+  .julio-stat { display: flex; flex-direction: column; align-items: flex-end; gap: 1px; }
+  .julio-stat-label { font-size: 9px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; }
+  .julio-stat-val { font-weight: 600; }
+  .julio-stat-val.proprio { color: var(--proprio); }
+  .julio-stat-val.parceria { color: var(--parceria); }
+
+  .julio-block-toggle {
+    width: 26px; height: 26px;
+    border-radius: 6px;
+    background: var(--border);
+    border: none;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    color: var(--muted);
+    font-size: 11px;
+    transition: all 0.2s;
+    flex-shrink: 0;
+  }
+  .julio-block-toggle:hover { background: var(--accent); color: #000; }
+  .julio-block-toggle.open { background: rgba(232,255,71,0.1); color: var(--accent); }
+
+  .julio-table-wrap {
+    overflow: hidden;
+    max-height: 0;
+    transition: max-height 0.35s ease;
+  }
+  .julio-table-wrap.open { max-height: 99999px; }
+
+  /* PARCERIA INDICATOR in table */
+  .badge-parceria {
+    display: inline-block;
+    background: rgba(255,159,71,0.15);
+    color: var(--parceria);
+    border: 1px solid rgba(255,159,71,0.3);
+    padding: 1px 6px;
+    border-radius: 4px;
+    font-size: 9px;
+    font-weight: 600;
+    vertical-align: middle;
+    margin-left: 4px;
+  }
+  .badge-proprio {
+    display: inline-block;
+    background: rgba(71,200,255,0.15);
+    color: var(--proprio);
+    border: 1px solid rgba(71,200,255,0.3);
+    padding: 1px 6px;
+    border-radius: 4px;
+    font-size: 9px;
+    font-weight: 600;
+    vertical-align: middle;
+    margin-left: 4px;
+  }
+
+  /* TABLE */
+  .card-table-wrap {
+    overflow: hidden;
+    max-height: 0;
+    transition: max-height 0.4s ease;
+  }
+  .card-table-wrap.open { max-height: 9999px; }
+
+  .card-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+  }
+  .card-table thead tr { background: #0f1219; }
+  .card-table th {
+    padding: 9px 12px;
+    text-align: left;
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: var(--muted);
+    border-bottom: 1px solid var(--border);
+    white-space: nowrap;
+  }
+  .card-table th.right, .card-table td.right { text-align: right; }
+  .card-table tbody tr { border-bottom: 1px solid rgba(30,35,48,0.6); transition: background 0.15s; }
+  .card-table tbody tr:last-child { border-bottom: none; }
+  .card-table tbody tr:hover { background: rgba(232,255,71,0.03); }
+  .card-table td { padding: 9px 12px; font-family: 'DM Mono', monospace; color: var(--text); }
+  .td-empresa { font-size: 10px; background: rgba(71,200,255,0.08); color: var(--accent2); border-radius: 4px; padding: 2px 7px; font-weight: 500; display: inline-block; }
+  .td-cfop { font-size: 10px; color: var(--muted); }
+  .td-cliente { font-size: 12px; color: var(--text); max-width: 180px; }
+  .td-date { color: var(--muted); font-size: 11px; }
+  .td-val { color: var(--text); }
+  .td-com { color: var(--success); font-weight: 500; }
+
+  /* CARD FOOTER */
+  .card-footer {
+    padding: 10px 22px;
+    background: rgba(232,255,71,0.03);
+    border-top: 1px solid var(--border);
+    display: none;
+    justify-content: space-between;
+    align-items: center;
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .card-footer.open { display: flex; }
+  .footer-total { font-size: 13px; font-weight: 500; color: var(--success); }
+
+  /* ADJUSTMENTS SECTION */
+  .card-adjustments {
+    display: none;
+    padding: 14px 22px;
+    background: #0f1219;
+    border-top: 1px solid var(--border);
+    gap: 12px;
+    align-items: flex-end;
+    flex-wrap: wrap;
+  }
+  .card-adjustments.open { display: flex; }
+
+  .adj-group { display: flex; flex-direction: column; gap: 5px; flex: 1; min-width: 160px; }
+  .adj-label { font-size: 10px; font-family: 'DM Mono', monospace; text-transform: uppercase; letter-spacing: 0.7px; display: flex; align-items: center; gap: 5px; }
+  .adj-label.discount { color: var(--danger); }
+  .adj-label.credit   { color: var(--success); }
+
+  .adj-input {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+    width: 100%;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    -moz-appearance: textfield;
+  }
+  .adj-input::-webkit-outer-spin-button, .adj-input::-webkit-inner-spin-button { -webkit-appearance: none; }
+  .adj-input.discount:focus { border-color: var(--danger); box-shadow: 0 0 0 2px rgba(255,107,107,0.1); }
+  .adj-input.credit:focus   { border-color: var(--success); box-shadow: 0 0 0 2px rgba(71,255,176,0.1); }
+  .adj-input.has-value.discount { border-color: rgba(255,107,107,0.4); background: rgba(255,107,107,0.05); }
+  .adj-input.has-value.credit   { border-color: rgba(71,255,176,0.4);  background: rgba(71,255,176,0.05); }
+
+  .adj-obs {
+    background: var(--surface); border: 1px solid var(--border); color: var(--text);
+    padding: 7px 12px; border-radius: 8px; font-family: 'DM Mono', monospace;
+    font-size: 11px; width: 100%; outline: none; resize: none; height: 56px;
+    transition: border-color 0.2s; line-height: 1.5;
+  }
+  .adj-obs::placeholder { color: var(--muted); }
+  .adj-obs.discount:focus { border-color: rgba(255,107,107,0.5); }
+  .adj-obs.credit:focus   { border-color: rgba(71,255,176,0.5); }
+  .adj-obs.has-value.discount { border-color: rgba(255,107,107,0.3); background: rgba(255,107,107,0.03); }
+  .adj-obs.has-value.credit   { border-color: rgba(71,255,176,0.3);  background: rgba(71,255,176,0.03); }
+  .adj-obs-label { font-size: 9px; font-family: 'DM Mono', monospace; color: var(--muted); text-transform: uppercase; letter-spacing: 0.6px; margin-top: 5px; margin-bottom: 3px; }
+
+  .adj-result {
+    flex: 1; min-width: 200px;
+    background: rgba(232,255,71,0.04);
+    border: 1px solid rgba(232,255,71,0.12);
+    border-radius: 8px; padding: 8px 14px;
+    display: flex; flex-direction: column; gap: 3px;
+  }
+  .adj-result-label { font-size: 9px; font-family: 'DM Mono', monospace; text-transform: uppercase; letter-spacing: 0.8px; color: var(--muted); }
+  .adj-result-value { font-size: 18px; font-weight: 700; color: var(--accent); font-family: 'Syne', sans-serif; transition: color 0.2s; }
+  .adj-result-value.negative { color: var(--danger); }
+  .adj-result-breakdown { font-size: 10px; font-family: 'DM Mono', monospace; color: var(--muted); margin-top: 1px; }
+
+  .adj-clear-btn {
+    padding: 8px 12px; border-radius: 8px; border: 1px solid var(--border);
+    background: transparent; color: var(--muted); font-size: 11px;
+    font-family: 'DM Mono', monospace; cursor: pointer; transition: all 0.2s;
+    white-space: nowrap; align-self: flex-end;
+  }
+  .adj-clear-btn:hover { border-color: var(--danger); color: var(--danger); }
+
+  .metric-value.final-adjusted { color: var(--accent) !important; position: relative; }
+  .metric-value.final-adjusted::after { content: '✎'; font-size: 9px; margin-left: 4px; opacity: 0.6; }
+
+  /* EXPORT BUTTON */
+  .export-wrap { position: relative; flex-shrink: 0; margin-left: 6px; }
+  .export-btn {
+    padding: 6px 13px; border-radius: 8px; border: 1px solid var(--border);
+    background: var(--surface); color: var(--muted); font-size: 11px;
+    font-family: 'DM Mono', monospace; cursor: pointer;
+    display: flex; align-items: center; gap: 6px; transition: all 0.18s; white-space: nowrap; z-index: 2;
+  }
+  .export-btn:hover { border-color: var(--accent2); color: var(--accent2); background: rgba(71,200,255,0.05); }
+  .export-btn .arrow { font-size: 8px; transition: transform 0.18s; }
+  .export-btn.open .arrow { transform: rotate(180deg); }
+
+  .export-dropdown {
+    display: none; position: absolute; top: calc(100% + 6px); right: 0;
+    background: #1a1f2e; border: 1px solid var(--border); border-radius: 10px;
+    overflow: hidden; z-index: 999; min-width: 160px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.5); animation: dropIn 0.15s ease;
+  }
+  @keyframes dropIn { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: translateY(0); } }
+  .export-dropdown.open { display: block; }
+  .export-opt {
+    display: flex; align-items: center; gap: 10px; padding: 11px 16px;
+    font-family: 'DM Mono', monospace; font-size: 12px; cursor: pointer;
+    color: var(--text); transition: background 0.15s;
+    border: none; background: none; width: 100%; text-align: left;
+  }
+  .export-opt:hover { background: rgba(255,255,255,0.05); }
+  .export-opt .opt-icon { font-size: 15px; }
+  .export-opt .opt-label { flex: 1; }
+  .export-opt .opt-tag { font-size: 9px; padding: 2px 6px; border-radius: 4px; font-weight: 600; }
+  .export-opt.xlsx .opt-tag { background: rgba(71,255,176,0.15); color: var(--success); }
+  .export-opt.pdf  .opt-tag { background: rgba(255,107,107,0.15); color: var(--danger); }
+  .export-opt-sep { height: 1px; background: var(--border); margin: 0 10px; }
+
+  /* SCROLLBAR */
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+  /* EMPTY STATE */
+  #empty-state { display: none; padding: 80px 40px; text-align: center; color: var(--muted); font-size: 14px; }
+
+  /* RESUMO BUTTON */
+  .btn-resumo {
+    background: linear-gradient(135deg, rgba(232,255,71,0.15), rgba(71,200,255,0.15));
+    border-color: rgba(232,255,71,0.4);
+    color: var(--accent);
+    font-weight: 700;
+  }
+  .btn-resumo:hover {
+    background: linear-gradient(135deg, rgba(232,255,71,0.25), rgba(71,200,255,0.25));
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  /* RESUMO MODAL OVERLAY */
+  #resumo-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(8,10,16,0.92);
+    z-index: 200;
+    overflow-y: auto;
+    padding: 32px 20px;
+  }
+  #resumo-overlay.open { display: block; }
+
+  #resumo-modal {
+    max-width: 1100px;
+    margin: 0 auto;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    overflow: hidden;
+  }
+
+  .resumo-header {
+    background: linear-gradient(135deg, #0d1520 0%, #111825 100%);
+    padding: 24px 32px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .resumo-header h2 { font-size: 18px; font-weight: 800; color: var(--accent); letter-spacing: -0.3px; }
+  .resumo-header p  { font-size: 11px; color: var(--muted); font-family: 'DM Mono', monospace; margin-top: 3px; }
+  .resumo-header-actions { display: flex; gap: 10px; align-items: center; }
+
+  .btn-print {
+    padding: 9px 18px;
+    border-radius: 10px;
+    border: 1px solid rgba(71,200,255,0.4);
+    background: rgba(71,200,255,0.1);
+    color: var(--accent2);
+    font-family: 'Syne', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .btn-print.btn-xlsx {
+    border-color: rgba(71,255,176,0.4);
+    background: rgba(71,255,176,0.08);
+    color: var(--success);
+  }
+  .btn-print.btn-xlsx:hover { background: rgba(71,255,176,0.18); border-color: var(--success); }
+
+
+  .btn-close-resumo {
+    padding: 9px 16px;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    background: var(--card-bg);
+    color: var(--muted);
+    font-family: 'Syne', sans-serif;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .btn-close-resumo:hover { border-color: var(--danger); color: var(--danger); }
+
+  /* RESUMO TABLE */
+  .resumo-body { padding: 28px 32px; }
+
+  .resumo-section-title {
+    font-size: 11px;
+    font-family: 'DM Mono', monospace;
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    color: var(--muted);
+    margin-bottom: 12px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .resumo-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+    margin-bottom: 28px;
+  }
+  .resumo-table thead tr { background: #0c1018; }
+  .resumo-table th {
+    padding: 9px 12px;
+    text-align: left;
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: var(--muted);
+    border-bottom: 1px solid var(--border);
+    white-space: nowrap;
+  }
+  .resumo-table th.right, .resumo-table td.right { text-align: right; }
+  .resumo-table tbody tr { border-bottom: 1px solid rgba(30,35,48,0.5); transition: background 0.15s; }
+  .resumo-table tbody tr:hover { background: rgba(255,255,255,0.02); }
+  .resumo-table tbody tr:last-child { border-bottom: none; }
+  .resumo-table td { padding: 9px 12px; font-family: 'DM Mono', monospace; }
+
+  .resumo-table .td-cod { color: var(--muted); font-size: 10px; }
+  .resumo-table .td-name { font-weight: 600; color: var(--text); }
+  .resumo-table .td-name.gerente { color: var(--accent2); }
+  .resumo-table .td-name.interno { color: var(--muted); }
+  .resumo-table .td-juridica { font-size: 10px; }
+  .resumo-table .tag-sim { color: #a8ff78; background: rgba(168,255,120,0.1); padding: 1px 6px; border-radius: 4px; font-size: 9px; }
+  .resumo-table .tag-nao { color: var(--muted); font-size: 10px; }
+  .resumo-table .td-venda  { color: var(--accent); font-weight: 600; }
+  .resumo-table .td-com    { color: var(--text); }
+  .resumo-table .td-desc   { color: var(--danger); }
+  .resumo-table .td-cred   { color: #a8ff78; }
+  .resumo-table .td-bruto  { color: var(--text); font-weight: 600; }
+  .resumo-table .td-ir     { color: var(--danger); font-size: 11px; }
+  .resumo-table .td-liq    { color: var(--success); font-weight: 700; }
+  .resumo-table .td-zero   { color: var(--muted); font-size: 10px; }
+
+  .resumo-table tr.row-total {
+    background: rgba(232,255,71,0.04);
+    border-top: 2px solid rgba(232,255,71,0.2);
+  }
+  .resumo-table tr.row-total td {
+    font-weight: 700;
+    color: var(--accent);
+    font-size: 12px;
+    padding: 11px 12px;
+  }
+  .resumo-table tr.row-total .td-liq { color: var(--accent); font-size: 13px; }
+
+  .resumo-table tr.row-interno-total {
+    background: rgba(71,200,255,0.04);
+    border-top: 2px solid rgba(71,200,255,0.2);
+  }
+  .resumo-table tr.row-interno-total td {
+    font-weight: 700;
+    color: var(--accent2);
+    font-size: 12px;
+    padding: 11px 12px;
+  }
+
+  .resumo-total-geral {
+    background: linear-gradient(135deg, rgba(232,255,71,0.08), rgba(71,200,255,0.08));
+    border: 1px solid rgba(232,255,71,0.25);
+    border-radius: 12px;
+    padding: 16px 20px;
+    display: flex;
+    gap: 32px;
+    align-items: center;
+    margin-top: 8px;
+    flex-wrap: wrap;
+  }
+  .rtg-item { display: flex; flex-direction: column; gap: 3px; }
+  .rtg-label { font-size: 9px; font-family: 'DM Mono', monospace; text-transform: uppercase; letter-spacing: 0.8px; color: var(--muted); }
+  .rtg-value { font-size: 18px; font-weight: 800; }
+  .rtg-value.accent  { color: var(--accent); }
+  .rtg-value.accent2 { color: var(--accent2); }
+  .rtg-value.success { color: var(--success); }
+  .rtg-value.danger  { color: var(--danger); }
+  .rtg-sep { width: 1px; height: 40px; background: var(--border); }
+
+  @media (max-width: 780px) {
+    header { padding: 20px; }
+    #summary-bar, #controls { padding: 16px 20px; }
+    #vendors-grid { padding: 0 16px; }
+  }
+</style>
+</head>
+<body>
+
+<div id="loading">
+  <div class="spinner"></div>
+  <p id="loading-msg">Processando planilha...</p>
+</div>
+
+<header>
+  <div class="logo-mark">RC</div>
+  <div>
+    <h1>Relatório de Comissões</h1>
+    <p>Extrator de dados por representante</p>
+  </div>
+  <div class="header-right">
+    <span id="periodo-badge"></span>
+    <button class="btn btn-resumo" id="btn-resumo" style="display:none" onclick="gerarResumo()">📋 Gerar Resumo</button>
+    <button class="btn" id="btn-new" style="display:none" onclick="resetApp()">↩ Nova planilha</button>
+  </div>
+</header>
+
+<!-- DROP SECTION -->
+<div id="drop-section">
+  <div id="drop-zone">
+    <span class="drop-icon">📊</span>
+    <h2>Arraste a planilha aqui</h2>
+    <p>Suporte para arquivos <strong>.xls</strong> e <strong>.xlsx</strong><br>
+    Compatível com o formato de Relatório de Comissão por Faturamento</p>
+    <label for="file-input">
+      <span class="drop-hint">📁 ou clique para selecionar arquivo</span>
+    </label>
+    <input type="file" id="file-input" accept=".xls,.xlsx">
+  </div>
+</div>
+
+<!-- APP SECTION -->
+<div id="app-section">
+  <div id="summary-bar">
+    <div class="stat">
+      <span class="stat-label">Representantes</span>
+      <span class="stat-value accent2" id="stat-total">0</span>
+    </div>
+    <div class="sep"></div>
+    <div class="stat">
+      <span class="stat-label">Total Vendas</span>
+      <span class="stat-value accent" id="stat-vendas">R$ 0</span>
+    </div>
+    <div class="sep"></div>
+    <div class="stat">
+      <span class="stat-label">Comissão Bruta</span>
+      <span class="stat-value" id="stat-com">R$ 0</span>
+    </div>
+    <div class="sep"></div>
+    <div class="stat">
+      <span class="stat-label">IRRF Total</span>
+      <span class="stat-value" style="color:var(--danger)" id="stat-irrf">—</span>
+    </div>
+    <div class="sep"></div>
+    <div class="stat">
+      <span class="stat-label">Líquido a Pagar</span>
+      <span class="stat-value" style="color:var(--success)" id="stat-net">R$ 0</span>
+    </div>
+    <div class="sep"></div>
+    <div class="stat">
+      <span class="stat-label">Notas Fiscais</span>
+      <span class="stat-value" id="stat-notas">0</span>
+    </div>
+    <div class="sep"></div>
+    <div class="stat">
+      <span class="stat-label">Total Descontos</span>
+      <span class="stat-value" style="color:var(--danger)" id="stat-desc">—</span>
+    </div>
+    <div class="sep"></div>
+    <div class="stat">
+      <span class="stat-label">Total Créditos</span>
+      <span class="stat-value" style="color:#a8ff78" id="stat-cred">—</span>
+    </div>
+  </div>
+
+  <div id="controls">
+    <input type="text" id="search-input" placeholder="Buscar representante..." oninput="filterVendors()">
+    <select id="sort-select" onchange="sortAndRender()">
+      <option value="name">Ordenar: Nome</option>
+      <option value="com_desc">Maior comissão</option>
+      <option value="com_asc">Menor comissão</option>
+      <option value="notas">Mais notas</option>
+    </select>
+    <button class="btn" onclick="toggleAll(true)">⊞ Expandir tudo</button>
+    <button class="btn" onclick="toggleAll(false)">⊟ Recolher tudo</button>
+    <span class="results-count" id="results-count">0 representantes</span>
+  </div>
+
+  <div id="vendors-grid"></div>
+  <div id="empty-state">Nenhum representante encontrado para "<span id="search-term"></span>"</div>
+</div>
+
+<!-- RESUMO MODAL -->
+<div id="resumo-overlay">
+  <div id="resumo-modal">
+    <div class="resumo-header">
+      <div>
+        <h2>📋 Resumo de Comissões</h2>
+        <p id="resumo-periodo-label">—</p>
+      </div>
+      <div class="resumo-header-actions">
+        <button class="btn-print" onclick="exportarResumoPDF()">⬇ PDF</button>
+        <button class="btn-print btn-xlsx" onclick="exportarResumoXLSX()">⬇ Excel</button>
+        <button class="btn-close-resumo" onclick="fecharResumo()">✕ Fechar</button>
+      </div>
+    </div>
+    <div class="resumo-body" id="resumo-body"></div>
+  </div>
+</div>
+
+
+<script>
+// ═══════════════════════════════════════════════════════════
+//  STATE
+// ═══════════════════════════════════════════════════════════
+let allVendors = [];
+let filteredVendors = [];
+let expandedCards = new Set();
+let adjustments = {};
+let julioBlockState = { proprio: false, parceria: false };
+const JULIO_NAME_PATTERN = /julio/i;
+const INTERNOS_PATTERN = /daniel possi|douglas tadeu|^interno$|julio|rosana alves|metalúrgica|garden|site garden/i;
+let julioCode = null;
+
+// ═══════════════════════════════════════════════════════════
+//  DRAG & DROP
+// ═══════════════════════════════════════════════════════════
+const dropZone = document.getElementById('drop-zone');
+const fileInput = document.getElementById('file-input');
+
+dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('drag-over'); });
+dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag-over'));
+dropZone.addEventListener('drop', e => {
+  e.preventDefault(); dropZone.classList.remove('drag-over');
+  if (e.dataTransfer.files[0]) processFile(e.dataTransfer.files[0]);
+});
+fileInput.addEventListener('change', e => { if (e.target.files[0]) processFile(e.target.files[0]); });
+
+// ═══════════════════════════════════════════════════════════
+//  FILE PROCESSING
+// ═══════════════════════════════════════════════════════════
+function processFile(file) {
+  const ext = file.name.split('.').pop().toLowerCase();
+  if (!['xlsx','xls','xlsm','ods'].includes(ext)) {
+    alert('Formato inválido. Por favor, envie um arquivo Excel (.xlsx, .xls, .xlsm).');
+    return;
+  }
+  document.getElementById('loading').style.display = 'flex';
+  document.getElementById('loading-msg').textContent = 'Processando planilha...';
+  const reader = new FileReader();
+  reader.onload = e => {
+    try {
+      const data = new Uint8Array(e.target.result);
+      const wb = XLSX.read(data, { type: 'array', cellDates: false });
+      const sh = wb.Sheets[wb.SheetNames[0]];
+      const rows = XLSX.utils.sheet_to_json(sh, { header: 1, defval: '' });
+      parseReport(rows);
+    } catch(err) {
+      alert('Erro ao processar arquivo: ' + err.message);
+      document.getElementById('loading').style.display = 'none';
+    }
+  };
+  reader.readAsArrayBuffer(file);
+}
+
+function resetApp() {
+  allVendors = []; filteredVendors = []; expandedCards = new Set();
+  adjustments = {}; julioCode = null;
+  julioBlockState = { proprio: false, parceria: false };
+  document.getElementById('app-section').style.display = 'none';
+  document.getElementById('drop-section').style.display = 'flex';
+  document.getElementById('btn-new').style.display = 'none';
+  document.getElementById('btn-resumo').style.display = 'none';
+  document.getElementById('periodo-badge').style.display = 'none';
+  document.getElementById('vendors-grid').innerHTML = '';
+  fileInput.value = '';
+}
+
+// ═══════════════════════════════════════════════════════════
+//  PARSE
+// ═══════════════════════════════════════════════════════════
+function parseReport(rows) {
+  const vendorMap = new Map();
+  let periodo = '';
+  for (let i = 0; i < Math.min(10, rows.length); i++) {
+    const v = String(rows[i][0] || '');
+    if (v.startsWith('Período:')) { periodo = v; break; }
+  }
+  let i = 0;
+  while (i < rows.length) {
+    const cell0 = String(rows[i][0] || '').trim();
+    if (cell0.startsWith('Período:') || cell0.startsWith('Gestor:') || cell0 === 'Emp.') { i++; continue; }
+    if (cell0.startsWith('Vendedor:') && !cell0.includes('Todos')) {
+      const vendorLine = cell0.replace('Vendedor:', '').trim();
+      const codeMatch = vendorLine.match(/^(\d+)\s*-\s*/);
+      const code = codeMatch ? codeMatch[1] : String(i);
+      let rest = vendorLine.replace(/^\d+\s*-\s*/, '');
+      const emailMatch = rest.match(/\(\s*e-Mail:\s*([^)]+)\)/i);
+      const email = emailMatch ? emailMatch[1].trim() : '';
+      const name = rest.replace(/\(\s*e-Mail:[^)]*\)/i, '').trim();
+      let empresa = '';
+      if (i+1 < rows.length) empresa = String(rows[i+1][0] || '').replace('Empresa:', '').trim();
+      let blockItems = [], blockIrrf = 0, blockComLiq = 0;
+      let j = i + 2;
+      while (j < rows.length) {
+        const r = rows[j];
+        const r0  = String(r[0]  || '').trim();
+        const r14 = String(r[14] || '').trim();
+        const r15 = String(r[15] || '').trim();
+        if (r0.startsWith('Vendedor:') && !r0.includes('Todos')) break;
+        if (r0 === 'Total de Vendedor') { j++; break; }
+        if (r14 === 'Total de Comissão a Pagar' && r15 === 'IRRF sobre Comissão') {
+          blockComLiq = parseFloat(String(r[16]).replace(',', '.')) || 0;
+          blockIrrf   = parseFloat(String(r[17]).replace(',', '.')) || 0;
+          j++; continue;
+        }
+        const nota = String(r[1] || '').trim();
+        if (nota && /^\d+$/.test(nota)) {
+          const cliente = String(r[6] || '').trim();
+          if (cliente) {
+            blockItems.push({
+              empCode: String(r[0] || '').trim(), nota,
+              pedido: String(r[2] || '').trim(), nroPedRep: String(r[3] || '').trim(),
+              date: xlsDateToStr(r[4]), cliente, cfop: String(r[10] || '').trim(),
+              baseCom: parseFloat(String(r[12]).replace(',', '.')) || 0,
+              vlrTotal: parseFloat(String(r[14]).replace(',', '.')) || 0,
+              deducoes: parseFloat(String(r[15]).replace(',', '.')) || 0,
+              pctCom:   parseFloat(String(r[16]).replace(',', '.')) || 0,
+              vlrCom:   parseFloat(String(r[17]).replace(',', '.')) || 0,
+            });
+          }
+        }
+        j++;
+      }
+      if (blockItems.length > 0) {
+        if (vendorMap.has(code)) {
+          const ex = vendorMap.get(code);
+          ex.items.push(...blockItems);
+          ex.irrf += blockIrrf;
+          ex.totalCom    = ex.items.reduce((s, x) => s + x.vlrCom, 0);
+          ex.totalVendas = ex.items.reduce((s, x) => s + x.vlrTotal, 0);
+          ex.irrfPct     = (ex.irrf > 0 && ex.totalCom > 0) ? ex.irrf / ex.totalCom : 0;
+          ex.netCom      = ex.irrf > 0 ? ex.totalCom - ex.irrf : ex.totalCom;
+        } else {
+          const totalCom    = blockItems.reduce((s, x) => s + x.vlrCom, 0);
+          const totalVendas = blockItems.reduce((s, x) => s + x.vlrTotal, 0);
+          const irrfPct     = (blockIrrf > 0 && totalCom > 0) ? blockIrrf / totalCom : 0;
+          vendorMap.set(code, {
+            code, name, email, empresa, items: blockItems, totalCom, totalVendas,
+            irrf: blockIrrf, irrfPct,
+            netCom: blockIrrf > 0 ? (blockComLiq || totalCom - blockIrrf) : totalCom,
+          });
+        }
+      }
+      i = j;
+    } else { i++; }
+  }
+
+  allVendors = Array.from(vendorMap.values());
+  julioCode = null;
+  for (const v of allVendors) {
+    if (JULIO_NAME_PATTERN.test(v.name)) { julioCode = v.code; break; }
+  }
+  if (julioCode) {
+    document.getElementById('loading-msg').textContent = 'Analisando parcerias do Julio...';
+    computeJulioSplit();
+  }
+  if (periodo) {
+    const pb = document.getElementById('periodo-badge');
+    pb.textContent = periodo; pb.style.display = 'block';
+  }
+  filteredVendors = [...allVendors];
+  updateSummary();
+  renderCards();
+  document.getElementById('loading').style.display = 'none';
+  document.getElementById('drop-section').style.display = 'none';
+  document.getElementById('app-section').style.display = 'block';
+  document.getElementById('btn-new').style.display = 'flex';
+  document.getElementById('btn-resumo').style.display = 'flex';
+}
+
+// ═══════════════════════════════════════════════════════════
+//  JULIO SPLIT
+// ═══════════════════════════════════════════════════════════
+function computeJulioSplit() {
+  const julio = allVendors.find(v => v.code === julioCode);
+  if (!julio) return;
+  const notasDeOutros = new Set();
+  for (const v of allVendors) {
+    if (v.code === julioCode) continue;
+    for (const it of v.items) notasDeOutros.add(it.nota.trim());
+  }
+  julio.itemsProprio  = [];
+  julio.itemsParceria = [];
+  for (const it of julio.items) {
+    (notasDeOutros.has(it.nota.trim()) ? julio.itemsParceria : julio.itemsProprio).push(it);
+  }
+  julio.totalVendasProprio  = julio.itemsProprio.reduce((s, x) => s + x.vlrTotal, 0);
+  julio.totalVendasParceria = julio.itemsParceria.reduce((s, x) => s + x.vlrTotal, 0);
+  julio.totalComProprio     = julio.itemsProprio.reduce((s, x) => s + x.vlrCom, 0);
+  julio.totalComParceria    = julio.itemsParceria.reduce((s, x) => s + x.vlrCom, 0);
+}
+
+// ═══════════════════════════════════════════════════════════
+//  HELPERS
+// ═══════════════════════════════════════════════════════════
+function xlsDateToStr(v) {
+  if (!v) return '—';
+  const n = parseFloat(v);
+  if (!isNaN(n) && n > 10000) {
+    // Compensate for timezone offset to avoid date shifting by 1 day
+    const utcMs = Math.round((n - 25569) * 86400 * 1000);
+    const d = new Date(utcMs);
+    const local = new Date(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate());
+    return local.toLocaleDateString('pt-BR');
+  }
+  return String(v);
+}
+function fmtBRL(v) {
+  return v.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+}
+function initials(name) {
+  return name.split(' ').filter(w => w.length > 2).slice(0, 2).map(w => w[0]).join('').toUpperCase() || name[0];
+}
+function getFinalValue(v, discount, credit) {
+  if (v.irrfPct && v.irrfPct > 0) {
+    const base = v.totalCom - (discount || 0) + (credit || 0);
+    return base - base * v.irrfPct;
+  }
+  return v.totalCom - (discount || 0) + (credit || 0);
+}
+function getIrrfRecalculado(v, discount, credit) {
+  if (!v.irrfPct || v.irrfPct === 0) return 0;
+  const base = v.totalCom - (discount || 0) + (credit || 0);
+  return base * v.irrfPct;
+}
+function isInterno(v) {
+  return INTERNOS_PATTERN.test(v.name.trim());
+}
+function safeFileName(name) {
+  return name.replace(/[^\w\s-]/g, '').replace(/\s+/g, '_').slice(0, 40);
+}
+function getVendorExportData(code) {
+  const v = allVendors.find(x => x.code === code);
+  if (!v) return null;
+  const adj = adjustments[code] || {};
+  const discount = adj.discount || 0, credit = adj.credit || 0;
+  const discObs = adj.discObs || '', credObs = adj.credObs || '';
+  return { v, discount, credit, discObs, credObs, finalVal: getFinalValue(v, discount, credit) };
+}
+
+// ═══════════════════════════════════════════════════════════
+//  SUMMARY
+// ═══════════════════════════════════════════════════════════
+function updateSummary() {
+  const totalVendas = allVendors.reduce((s, v) => {
+    if (v.code === julioCode && v.totalVendasProprio !== undefined) return s + v.totalVendasProprio;
+    return s + v.totalVendas;
+  }, 0);
+  const totalCom  = allVendors.reduce((s, v) => s + v.totalCom, 0);
+  const totalIrrf = allVendors.reduce((s, v) => s + v.irrf, 0);
+  const totalNet  = allVendors.reduce((s, v) => {
+    const adj = adjustments[v.code] || {};
+    return s + getFinalValue(v, adj.discount || 0, adj.credit || 0);
+  }, 0);
+  const totalNotas = allVendors.reduce((s, v) => s + v.items.length, 0);
+  document.getElementById('stat-total').textContent  = allVendors.length;
+  document.getElementById('stat-vendas').textContent = fmtBRL(totalVendas);
+  document.getElementById('stat-com').textContent    = fmtBRL(totalCom);
+  document.getElementById('stat-irrf').textContent   = totalIrrf > 0 ? '- ' + fmtBRL(totalIrrf) : '—';
+  document.getElementById('stat-net').textContent    = fmtBRL(totalNet);
+  document.getElementById('stat-notas').textContent  = totalNotas;
+
+  const totalDesc = Object.values(adjustments).reduce((s,a) => s + (a.discount||0), 0);
+  const totalCred = Object.values(adjustments).reduce((s,a) => s + (a.credit||0), 0);
+  const descEl = document.getElementById('stat-desc');
+  const credEl = document.getElementById('stat-cred');
+  if(descEl) descEl.textContent = totalDesc > 0 ? '- ' + fmtBRL(totalDesc) : '—';
+  if(credEl) credEl.textContent = totalCred > 0 ? '+ ' + fmtBRL(totalCred) : '—';
+}
+
+// ═══════════════════════════════════════════════════════════
+//  FILTER & SORT
+// ═══════════════════════════════════════════════════════════
+function filterVendors() {
+  const q = document.getElementById('search-input').value.toLowerCase();
+  document.getElementById('search-term').textContent = q;
+  filteredVendors = allVendors.filter(v =>
+    v.name.toLowerCase().includes(q) || v.code.includes(q) || v.email.toLowerCase().includes(q)
+  );
+  sortAndRender();
+}
+function sortAndRender() {
+  const sort = document.getElementById('sort-select').value;
+  filteredVendors.sort((a, b) => {
+    if (sort === 'name')     return a.name.localeCompare(b.name);
+    if (sort === 'com_desc') return b.totalCom - a.totalCom;
+    if (sort === 'com_asc')  return a.totalCom - b.totalCom;
+    if (sort === 'notas')    return b.items.length - a.items.length;
+    return 0;
+  });
+  renderCards();
+}
+
+// ═══════════════════════════════════════════════════════════
+//  RENDER CARDS
+// ═══════════════════════════════════════════════════════════
+function renderCards() {
+  const grid  = document.getElementById('vendors-grid');
+  const empty = document.getElementById('empty-state');
+  const count = document.getElementById('results-count');
+  count.textContent = `${filteredVendors.length} representante${filteredVendors.length !== 1 ? 's' : ''}`;
+  if (filteredVendors.length === 0) { grid.innerHTML = ''; empty.style.display = 'block'; return; }
+  empty.style.display = 'none';
+  grid.innerHTML = filteredVendors.map((v, idx) =>
+    v.code === julioCode ? renderJulioCard(v, idx) : renderNormalCard(v, idx)
+  ).join('');
+}
+
+function renderNormalCard(v, idx) {
+  const isOpen = expandedCards.has(v.code);
+  const adj = adjustments[v.code] || {};
+  const discount = adj.discount || 0, credit = adj.credit || 0;
+  const discObs = adj.discObs || '', credObs = adj.credObs || '';
+  const finalVal = getFinalValue(v, discount, credit);
+  const hasAdj = discount > 0 || credit > 0;
+  const avgPct = v.items.length ? (v.items.reduce((s,x) => s + x.pctCom, 0) / v.items.length).toFixed(1) : '0';
+  const irrfRecalc = getIrrfRecalculado(v, discount, credit);
+  const tableRows = v.items.map(it => `
+    <tr>
+      <td><span class="td-empresa">${it.empCode}</span></td>
+      <td style="font-family:'DM Mono',monospace;font-size:11px">${it.nota}</td>
+      <td class="td-date">${it.date}</td>
+      <td class="td-cliente" title="${it.cliente}">${it.cliente.length > 28 ? it.cliente.slice(0,27)+'…' : it.cliente}</td>
+      <td class="td-cfop">${it.cfop}</td>
+      <td class="right td-val">${fmtBRL(it.vlrTotal)}</td>
+      <td class="right" style="color:var(--muted);font-size:11px">${it.deducoes !== 0 ? fmtBRL(it.deducoes) : '—'}</td>
+      <td class="right" style="color:var(--muted)">${it.pctCom}%</td>
+      <td class="right td-com">${fmtBRL(it.vlrCom)}</td>
+    </tr>`).join('');
+  const breakdownParts = [`Bruta: ${fmtBRL(v.totalCom)}`];
+  if (discount > 0) breakdownParts.push(`Desc.: -${fmtBRL(discount)}`);
+  if (credit   > 0) breakdownParts.push(`Créd.: +${fmtBRL(credit)}`);
+  if (v.irrfPct > 0) breakdownParts.push(`IRRF (${(v.irrfPct*100).toFixed(2)}%): -${fmtBRL(irrfRecalc)}`);
+  const finalLabel = hasAdj ? 'Final Ajustado' : (v.irrfPct > 0 ? 'A Pagar' : 'Comissão');
+  return `
+  <div class="vendor-card" id="card-${v.code}" style="animation-delay:${idx*0.03}s">
+    <div class="card-header" onclick="toggleCard('${v.code}')">
+      <div class="vendor-avatar">${initials(v.name)}</div>
+      <div class="vendor-info">
+        <div class="vendor-code">
+          <span># ${v.code} · ${v.empresa || 'GAR'} · ${v.items.length} nota${v.items.length !== 1 ? 's' : ''}</span>
+          ${v.irrf > 0 ? '<span class="badge-danger">⚠ IRRF</span>' : ''}
+          ${hasAdj ? '<span class="badge-accent">✎ ajustado</span>' : ''}
+        </div>
+        <div class="vendor-name">${v.name}</div>
+        ${v.email ? `<div class="vendor-email">${v.email}</div>` : ''}
+      </div>
+      <div class="card-actions" onclick="event.stopPropagation()">
+        <div class="export-wrap" id="expwrap-${v.code}">
+          <button class="export-btn" onclick="toggleExportMenu(event,'${v.code}')">↓ Exportar <span class="arrow">▾</span></button>
+          <div class="export-dropdown" id="expdrop-${v.code}">
+            <button class="export-opt xlsx" onclick="exportXLSX(event,'${v.code}')"><span class="opt-icon">📊</span><span class="opt-label">Excel</span><span class="opt-tag">XLSX</span></button>
+            <div class="export-opt-sep"></div>
+            <button class="export-opt pdf" onclick="exportPDF(event,'${v.code}')"><span class="opt-icon">🖨️</span><span class="opt-label">PDF</span><span class="opt-tag">PDF</span></button>
+          </div>
+        </div>
+        <button class="toggle-btn ${isOpen?'open':''}" id="btn-${v.code}" onclick="event.stopPropagation();toggleCard('${v.code}')">${isOpen?'▲':'▼'}</button>
+      </div>
+    </div>
+    <div class="card-metrics-row" style="cursor:pointer" onclick="toggleCard('${v.code}')">
+      <div class="metric"><div class="metric-label">Vendas</div><div class="metric-value yellow">${fmtBRL(v.totalVendas)}</div></div>
+      <div class="metric"><div class="metric-label">Com. Bruta</div><div class="metric-value">${fmtBRL(v.totalCom)}</div></div>
+      <div class="metric"><div class="metric-label">% Médio</div><div class="metric-value">${avgPct}%</div></div>
+      ${v.irrfPct > 0 ? `<div class="metric"><div class="metric-label">IRRF (${(v.irrfPct*100).toFixed(2)}%)</div><div class="metric-value red">- ${fmtBRL(irrfRecalc)}</div></div>` : ''}
+      ${discount > 0 ? `<div class="metric"><div class="metric-label">Desc. Extra</div><div class="metric-value red">- ${fmtBRL(discount)}</div></div>` : ''}
+      ${credit   > 0 ? `<div class="metric"><div class="metric-label">Crédito</div><div class="metric-value" style="color:#a8ff78">+ ${fmtBRL(credit)}</div></div>` : ''}
+      <div class="metric metric-final"><div class="metric-label">${finalLabel}</div><div class="metric-value green ${hasAdj?'final-adjusted':''}" id="hdr-final-${v.code}">${fmtBRL(finalVal)}</div></div>
+    </div>
+    <div class="card-table-wrap ${isOpen?'open':''}" id="wrap-${v.code}">
+      <table class="card-table">
+        <thead><tr><th>Emp.</th><th>Nota</th><th>Data</th><th>Cliente</th><th>CFOP</th><th class="right">Vlr. Total</th><th class="right">Deduções</th><th class="right">% Com.</th><th class="right">Comissão</th></tr></thead>
+        <tbody>${tableRows}</tbody>
+      </table>
+    </div>
+    <div class="card-adjustments ${isOpen?'open':''}" id="adj-${v.code}" onclick="event.stopPropagation()">
+      <div class="adj-group">
+        <span class="adj-label discount">⬇ Desconto Extra</span>
+        <input type="number" min="0" step="0.01" placeholder="0,00" class="adj-input discount ${discount>0?'has-value':''}" id="inp-disc-${v.code}" value="${discount>0?discount:''}" oninput="updateAdjustment('${v.code}')">
+        <div class="adj-obs-label">Referência do desconto</div>
+        <textarea placeholder="Ex: Devolução NF 1234..." class="adj-obs discount ${discObs?'has-value':''}" id="inp-disc-obs-${v.code}" oninput="updateAdjustment('${v.code}')">${discObs}</textarea>
+      </div>
+      <div class="adj-group">
+        <span class="adj-label credit">⬆ Crédito Extra</span>
+        <input type="number" min="0" step="0.01" placeholder="0,00" class="adj-input credit ${credit>0?'has-value':''}" id="inp-cred-${v.code}" value="${credit>0?credit:''}" oninput="updateAdjustment('${v.code}')">
+        <div class="adj-obs-label">Referência do crédito</div>
+        <textarea placeholder="Ex: Bônus de desempenho..." class="adj-obs credit ${credObs?'has-value':''}" id="inp-cred-obs-${v.code}" oninput="updateAdjustment('${v.code}')">${credObs}</textarea>
+      </div>
+      <div class="adj-result" id="adj-result-${v.code}">
+        <span class="adj-result-label">Valor Final a Pagar</span>
+        <span class="adj-result-value ${finalVal<0?'negative':''}" id="adj-final-${v.code}">${fmtBRL(finalVal)}</span>
+        <span class="adj-result-breakdown" id="adj-breakdown-${v.code}">${breakdownParts.join(' · ')}</span>
+      </div>
+      ${hasAdj ? `<button class="adj-clear-btn" onclick="clearAdjustment('${v.code}')">✕ Limpar</button>` : ''}
+    </div>
+    <div class="card-footer ${isOpen?'open':''}" id="footer-${v.code}">
+      <span>${v.items.length} notas fiscais</span>
+      <span>Vendas: <strong style="color:var(--accent)">${fmtBRL(v.totalVendas)}</strong></span>
+      <span>Bruta: <strong>${fmtBRL(v.totalCom)}</strong></span>
+      ${v.irrfPct > 0 ? `<span style="color:var(--danger)">IRRF: -${fmtBRL(irrfRecalc)}</span>` : ''}
+      ${discount > 0 ? `<span style="color:var(--danger)">Desc.: -${fmtBRL(discount)}</span>` : ''}
+      ${credit   > 0 ? `<span style="color:#a8ff78">Cred.: +${fmtBRL(credit)}</span>` : ''}
+      <span class="footer-total" id="footer-final-${v.code}">Final: ${fmtBRL(finalVal)}</span>
+    </div>
+  </div>`;
+}
+
+function renderJulioCard(v, idx) {
+  const isOpen = expandedCards.has(v.code);
+  const adj = adjustments[v.code] || {};
+  const discount = adj.discount || 0, credit = adj.credit || 0;
+  const discObs = adj.discObs || '', credObs = adj.credObs || '';
+  const finalVal = getFinalValue(v, discount, credit);
+  const hasAdj = discount > 0 || credit > 0;
+  const irrfRecalc = getIrrfRecalculado(v, discount, credit);
+  const proprio  = v.itemsProprio  || [];
+  const parceria = v.itemsParceria || [];
+  const propOpen = julioBlockState.proprio;
+  const parOpen  = julioBlockState.parceria;
+  const renderRows = items => items.map(it => `
+    <tr>
+      <td><span class="td-empresa">${it.empCode}</span></td>
+      <td style="font-family:'DM Mono',monospace;font-size:11px">${it.nota}</td>
+      <td class="td-date">${it.date}</td>
+      <td class="td-cliente" title="${it.cliente}">${it.cliente.length > 28 ? it.cliente.slice(0,27)+'…' : it.cliente}</td>
+      <td class="td-cfop">${it.cfop}</td>
+      <td class="right td-val">${fmtBRL(it.vlrTotal)}</td>
+      <td class="right" style="color:var(--muted);font-size:11px">${it.deducoes !== 0 ? fmtBRL(it.deducoes) : '—'}</td>
+      <td class="right" style="color:var(--muted)">${it.pctCom}%</td>
+      <td class="right td-com">${fmtBRL(it.vlrCom)}</td>
+    </tr>`).join('');
+  const finalLabel = hasAdj ? 'Final Ajustado' : (v.irrfPct > 0 ? 'A Pagar' : 'Comissão');
+  const breakdownParts = [`Bruta: ${fmtBRL(v.totalCom)}`];
+  if (discount > 0) breakdownParts.push(`Desc.: -${fmtBRL(discount)}`);
+  if (credit   > 0) breakdownParts.push(`Créd.: +${fmtBRL(credit)}`);
+  if (v.irrfPct > 0) breakdownParts.push(`IRRF (${(v.irrfPct*100).toFixed(2)}%): -${fmtBRL(irrfRecalc)}`);
+  return `
+  <div class="vendor-card julio-card" id="card-${v.code}" style="animation-delay:${idx*0.03}s">
+    <div class="card-header" onclick="toggleCard('${v.code}')">
+      <div class="vendor-avatar gerente">${initials(v.name)}</div>
+      <div class="vendor-info">
+        <div class="vendor-code">
+          <span># ${v.code} · ${v.empresa || 'GAR'} · ${v.items.length} notas</span>
+          <span class="badge-gerente">👔 GERENTE</span>
+          ${v.irrf > 0 ? '<span class="badge-danger">⚠ IRRF</span>' : ''}
+          ${hasAdj ? '<span class="badge-accent">✎ ajustado</span>' : ''}
+        </div>
+        <div class="vendor-name">${v.name}</div>
+        ${v.email ? `<div class="vendor-email">${v.email}</div>` : ''}
+        <div style="font-size:10px;color:var(--muted);font-family:'DM Mono',monospace;margin-top:4px">
+          🔵 <span style="color:var(--proprio)">${proprio.length}</span> notas próprias &nbsp;·&nbsp;
+          🟠 <span style="color:var(--parceria)">${parceria.length}</span> notas em parceria
+        </div>
+      </div>
+      <div class="card-actions" onclick="event.stopPropagation()">
+        <div class="export-wrap" id="expwrap-${v.code}">
+          <button class="export-btn" onclick="toggleExportMenu(event,'${v.code}')">↓ Exportar <span class="arrow">▾</span></button>
+          <div class="export-dropdown" id="expdrop-${v.code}">
+            <button class="export-opt xlsx" onclick="exportXLSX(event,'${v.code}')"><span class="opt-icon">📊</span><span class="opt-label">Excel</span><span class="opt-tag">XLSX</span></button>
+            <div class="export-opt-sep"></div>
+            <button class="export-opt pdf" onclick="exportPDF(event,'${v.code}')"><span class="opt-icon">🖨️</span><span class="opt-label">PDF</span><span class="opt-tag">PDF</span></button>
+          </div>
+        </div>
+        <button class="toggle-btn ${isOpen?'open':''}" id="btn-${v.code}" onclick="event.stopPropagation();toggleCard('${v.code}')">${isOpen?'▲':'▼'}</button>
+      </div>
+    </div>
+    <div class="card-metrics-row" style="cursor:pointer" onclick="toggleCard('${v.code}')">
+      <div class="metric"><div class="metric-label">Total Vendas</div><div class="metric-value yellow">${fmtBRL(v.totalVendas)}</div></div>
+      <div class="metric"><div class="metric-label">Com. Bruta Total</div><div class="metric-value">${fmtBRL(v.totalCom)}</div></div>
+      <div class="metric" style="border-left:2px solid rgba(71,200,255,0.3)"><div class="metric-label" style="color:var(--proprio)">🔵 Vendas Próprias</div><div class="metric-value blue">${fmtBRL(v.totalVendasProprio||0)}</div></div>
+      <div class="metric"><div class="metric-label" style="color:var(--proprio)">🔵 Com. Própria</div><div class="metric-value blue">${fmtBRL(v.totalComProprio||0)}</div></div>
+      <div class="metric" style="border-left:2px solid rgba(255,159,71,0.3)"><div class="metric-label" style="color:var(--parceria)">🟠 Vendas Parceria</div><div class="metric-value orange">${fmtBRL(v.totalVendasParceria||0)}</div></div>
+      <div class="metric"><div class="metric-label" style="color:var(--parceria)">🟠 Com. Parceria</div><div class="metric-value orange">${fmtBRL(v.totalComParceria||0)}</div></div>
+      ${v.irrfPct > 0 ? `<div class="metric"><div class="metric-label">IRRF (${(v.irrfPct*100).toFixed(2)}%)</div><div class="metric-value red">- ${fmtBRL(irrfRecalc)}</div></div>` : ''}
+      <div class="metric metric-final"><div class="metric-label">${finalLabel}</div><div class="metric-value green ${hasAdj?'final-adjusted':''}" id="hdr-final-${v.code}">${fmtBRL(finalVal)}</div></div>
+    </div>
+    <div class="julio-split-wrap ${isOpen?'open':''}" id="wrap-${v.code}">
+      <div class="julio-block">
+        <div class="julio-block-header" onclick="toggleJulioBlock('proprio')">
+          <span class="julio-block-icon">🔵</span>
+          <span class="julio-block-title proprio">Vendas Próprias do Julio</span>
+          <span style="font-size:10px;color:var(--muted);font-family:'DM Mono',monospace">${proprio.length} notas</span>
+          <div class="julio-block-stats">
+            <div class="julio-stat"><span class="julio-stat-label">Vendas</span><span class="julio-stat-val proprio">${fmtBRL(v.totalVendasProprio||0)}</span></div>
+            <div class="julio-stat"><span class="julio-stat-label">Comissão</span><span class="julio-stat-val proprio">${fmtBRL(v.totalComProprio||0)}</span></div>
+          </div>
+          <button class="julio-block-toggle ${propOpen?'open':''}" id="julio-toggle-proprio" onclick="event.stopPropagation();toggleJulioBlock('proprio')">${propOpen?'▲':'▼'}</button>
+        </div>
+        <div class="julio-table-wrap ${propOpen?'open':''}" id="julio-table-proprio">
+          <table class="card-table"><thead><tr><th>Emp.</th><th>Nota</th><th>Data</th><th>Cliente</th><th>CFOP</th><th class="right">Vlr. Total</th><th class="right">Deduções</th><th class="right">% Com.</th><th class="right">Comissão</th></tr></thead><tbody>${renderRows(proprio)}</tbody></table>
+          ${proprio.length===0?'<div style="padding:24px;text-align:center;color:var(--muted);font-size:13px">Nenhuma nota exclusiva neste período.</div>':''}
+        </div>
+      </div>
+      <div class="julio-block">
+        <div class="julio-block-header" onclick="toggleJulioBlock('parceria')">
+          <span class="julio-block-icon">🟠</span>
+          <span class="julio-block-title parceria">Vendas em Parceria com Representantes</span>
+          <span style="font-size:10px;color:var(--muted);font-family:'DM Mono',monospace">${parceria.length} notas</span>
+          <div class="julio-block-stats">
+            <div class="julio-stat"><span class="julio-stat-label">Vendas</span><span class="julio-stat-val parceria">${fmtBRL(v.totalVendasParceria||0)}</span></div>
+            <div class="julio-stat"><span class="julio-stat-label">Comissão</span><span class="julio-stat-val parceria">${fmtBRL(v.totalComParceria||0)}</span></div>
+          </div>
+          <button class="julio-block-toggle ${parOpen?'open':''}" id="julio-toggle-parceria" onclick="event.stopPropagation();toggleJulioBlock('parceria')">${parOpen?'▲':'▼'}</button>
+        </div>
+        <div class="julio-table-wrap ${parOpen?'open':''}" id="julio-table-parceria">
+          <table class="card-table"><thead><tr><th>Emp.</th><th>Nota</th><th>Data</th><th>Cliente</th><th>CFOP</th><th class="right">Vlr. Total</th><th class="right">Deduções</th><th class="right">% Com.</th><th class="right">Comissão</th></tr></thead><tbody>${renderRows(parceria)}</tbody></table>
+          ${parceria.length===0?'<div style="padding:24px;text-align:center;color:var(--muted);font-size:13px">Nenhuma nota em parceria neste período.</div>':''}
+        </div>
+      </div>
+    </div>
+    <div class="card-adjustments ${isOpen?'open':''}" id="adj-${v.code}" onclick="event.stopPropagation()">
+      <div class="adj-group">
+        <span class="adj-label discount">⬇ Desconto Extra</span>
+        <input type="number" min="0" step="0.01" placeholder="0,00" class="adj-input discount ${discount>0?'has-value':''}" id="inp-disc-${v.code}" value="${discount>0?discount:''}" oninput="updateAdjustment('${v.code}')">
+        <div class="adj-obs-label">Referência do desconto</div>
+        <textarea placeholder="Ex: Devolução NF 1234..." class="adj-obs discount ${discObs?'has-value':''}" id="inp-disc-obs-${v.code}" oninput="updateAdjustment('${v.code}')">${discObs}</textarea>
+      </div>
+      <div class="adj-group">
+        <span class="adj-label credit">⬆ Crédito Extra</span>
+        <input type="number" min="0" step="0.01" placeholder="0,00" class="adj-input credit ${credit>0?'has-value':''}" id="inp-cred-${v.code}" value="${credit>0?credit:''}" oninput="updateAdjustment('${v.code}')">
+        <div class="adj-obs-label">Referência do crédito</div>
+        <textarea placeholder="Ex: Bônus de desempenho..." class="adj-obs credit ${credObs?'has-value':''}" id="inp-cred-obs-${v.code}" oninput="updateAdjustment('${v.code}')">${credObs}</textarea>
+      </div>
+      <div class="adj-result" id="adj-result-${v.code}">
+        <span class="adj-result-label">Valor Final a Pagar</span>
+        <span class="adj-result-value ${finalVal<0?'negative':''}" id="adj-final-${v.code}">${fmtBRL(finalVal)}</span>
+        <span class="adj-result-breakdown" id="adj-breakdown-${v.code}">${breakdownParts.join(' · ')}</span>
+      </div>
+      ${hasAdj?`<button class="adj-clear-btn" onclick="clearAdjustment('${v.code}')">✕ Limpar</button>`:''}
+    </div>
+    <div class="card-footer ${isOpen?'open':''}" id="footer-${v.code}">
+      <span>${v.items.length} notas fiscais</span>
+      <span style="color:var(--proprio)">🔵 Próprias: ${fmtBRL(v.totalVendasProprio||0)} · com ${fmtBRL(v.totalComProprio||0)}</span>
+      <span style="color:var(--parceria)">🟠 Parceria: ${fmtBRL(v.totalVendasParceria||0)} · com ${fmtBRL(v.totalComParceria||0)}</span>
+      ${v.irrfPct>0?`<span style="color:var(--danger)">IRRF: -${fmtBRL(irrfRecalc)}</span>`:''}
+      <span class="footer-total" id="footer-final-${v.code}">Final: ${fmtBRL(finalVal)}</span>
+    </div>
+  </div>`;
+}
+
+// ═══════════════════════════════════════════════════════════
+//  TOGGLE
+// ═══════════════════════════════════════════════════════════
+function toggleCard(code) {
+  const wrap=document.getElementById('wrap-'+code), footer=document.getElementById('footer-'+code);
+  const adjPanel=document.getElementById('adj-'+code), btn=document.getElementById('btn-'+code);
+  if (!wrap) return;
+  const isOpen = wrap.classList.contains('open');
+  [wrap,footer,adjPanel].filter(Boolean).forEach(el => el.classList.toggle('open',!isOpen));
+  btn.classList.toggle('open',!isOpen); btn.textContent=isOpen?'▼':'▲';
+  if (isOpen) expandedCards.delete(code); else expandedCards.add(code);
+}
+function toggleJulioBlock(block) {
+  julioBlockState[block] = !julioBlockState[block];
+  const t=document.getElementById('julio-table-'+block), g=document.getElementById('julio-toggle-'+block);
+  if (t) t.classList.toggle('open',julioBlockState[block]);
+  if (g) { g.classList.toggle('open',julioBlockState[block]); g.textContent=julioBlockState[block]?'▲':'▼'; }
+}
+function toggleAll(open) {
+  filteredVendors.forEach(v => {
+    const wrap=document.getElementById('wrap-'+v.code), footer=document.getElementById('footer-'+v.code);
+    const adj=document.getElementById('adj-'+v.code), btn=document.getElementById('btn-'+v.code);
+    if (!wrap) return;
+    [wrap,footer,adj].filter(Boolean).forEach(el => el.classList.toggle('open',open));
+    btn.classList.toggle('open',open); btn.textContent=open?'▲':'▼';
+    if (open) expandedCards.add(v.code); else expandedCards.delete(v.code);
+  });
+}
+
+// ═══════════════════════════════════════════════════════════
+//  ADJUSTMENTS
+// ═══════════════════════════════════════════════════════════
+function updateAdjustment(code) {
+  const discInp=document.getElementById('inp-disc-'+code), credInp=document.getElementById('inp-cred-'+code);
+  const discObsEl=document.getElementById('inp-disc-obs-'+code), credObsEl=document.getElementById('inp-cred-obs-'+code);
+  const discount=Math.max(0,parseFloat(discInp.value)||0), credit=Math.max(0,parseFloat(credInp.value)||0);
+  const discObs=discObsEl?discObsEl.value.trim():'', credObs=credObsEl?credObsEl.value.trim():'';
+  adjustments[code]={discount,credit,discObs,credObs};
+  const v=allVendors.find(x=>x.code===code); if(!v) return;
+  const finalVal=getFinalValue(v,discount,credit), hasAdj=discount>0||credit>0;
+  discInp.classList.toggle('has-value',discount>0); credInp.classList.toggle('has-value',credit>0);
+  if(discObsEl) discObsEl.classList.toggle('has-value',discObs.length>0);
+  if(credObsEl) credObsEl.classList.toggle('has-value',credObs.length>0);
+  const resultEl=document.getElementById('adj-final-'+code), breakdownEl=document.getElementById('adj-breakdown-'+code);
+  if(resultEl){resultEl.textContent=fmtBRL(finalVal);resultEl.classList.toggle('negative',finalVal<0);}
+  if(breakdownEl){
+    const parts=[`Comissão bruta: ${fmtBRL(v.totalCom)}`];
+    if(v.irrfPct>0){const ir=getIrrfRecalculado(v,discount,credit);parts.push(`IRRF (${(v.irrfPct*100).toFixed(2)}%): -${fmtBRL(ir)}`);}
+    if(discount>0) parts.push(`Desconto: -${fmtBRL(discount)}`);
+    if(credit>0)   parts.push(`Crédito: +${fmtBRL(credit)}`);
+    breakdownEl.textContent=parts.join(' · ');
+  }
+  const hdrFinal=document.getElementById('hdr-final-'+code);
+  if(hdrFinal){hdrFinal.textContent=fmtBRL(finalVal);hdrFinal.className='metric-value '+(hasAdj?'final-adjusted':'green');hdrFinal.classList.toggle('negative',finalVal<0);}
+  const footerFinal=document.getElementById('footer-final-'+code);
+  if(footerFinal) footerFinal.textContent=`Final: ${fmtBRL(finalVal)}`;
+  const adjPanel=document.getElementById('adj-'+code);
+  if(adjPanel){
+    let clearBtn=adjPanel.querySelector('.adj-clear-btn');
+    if(hasAdj&&!clearBtn){clearBtn=document.createElement('button');clearBtn.className='adj-clear-btn';clearBtn.textContent='✕ Limpar';clearBtn.onclick=()=>clearAdjustment(code);adjPanel.appendChild(clearBtn);}
+    else if(!hasAdj&&clearBtn) clearBtn.remove();
+  }
+  updateSummary();
+}
+function clearAdjustment(code) {
+  adjustments[code]={discount:0,credit:0,discObs:'',credObs:''};
+  ['inp-disc-','inp-cred-'].forEach(p=>{const el=document.getElementById(p+code);if(el)el.value='';});
+  ['inp-disc-obs-','inp-cred-obs-'].forEach(p=>{const el=document.getElementById(p+code);if(el)el.value='';});
+  updateAdjustment(code);
+}
+
+// ═══════════════════════════════════════════════════════════
+//  EXPORT MENU
+// ═══════════════════════════════════════════════════════════
+function toggleExportMenu(e,code) {
+  e.stopPropagation();
+  document.querySelectorAll('.export-dropdown.open').forEach(d=>{
+    if(d.id!=='expdrop-'+code){d.classList.remove('open');if(d.previousElementSibling)d.previousElementSibling.classList.remove('open');}
+  });
+  const drop=document.getElementById('expdrop-'+code), btn=drop.previousElementSibling;
+  drop.classList.toggle('open'); btn.classList.toggle('open');
+}
+document.addEventListener('click',()=>{
+  document.querySelectorAll('.export-dropdown.open').forEach(d=>{
+    d.classList.remove('open');if(d.previousElementSibling)d.previousElementSibling.classList.remove('open');
+  });
+});
+
+// ═══════════════════════════════════════════════════════════
+//  EXPORT XLSX INDIVIDUAL
+// ═══════════════════════════════════════════════════════════
+function exportXLSX(e,code) {
+  e.stopPropagation();
+  const drop=document.getElementById('expdrop-'+code);
+  if(drop){drop.classList.remove('open');if(drop.previousElementSibling)drop.previousElementSibling.classList.remove('open');}
+  const {v,discount,credit,finalVal}=getVendorExportData(code);
+  const wb=XLSX.utils.book_new();
+  const isJulio=v.code===julioCode;
+  const hdr=['Emp.','Nota','Data','Cliente','CFOP','Vlr Total','Deduções','% Com.','Vlr Comissão'];
+  const makeRows=items=>items.map(it=>[it.empCode,it.nota,it.date,it.cliente,it.cfop,it.vlrTotal,it.deducoes||0,it.pctCom,it.vlrCom]);
+  if(isJulio){
+    const ws1=XLSX.utils.aoa_to_sheet([[`VENDAS PRÓPRIAS DO JULIO`],[`Representante: ${v.code} - ${v.name}`],[],hdr,...makeRows(v.itemsProprio||[]),[],['','','','','','','','Total',v.totalComProprio||0]]);
+    ws1['!cols']=[{wch:6},{wch:10},{wch:12},{wch:35},{wch:7},{wch:15},{wch:10},{wch:7},{wch:14}];
+    XLSX.utils.book_append_sheet(wb,ws1,'Próprias');
+    const ws2=XLSX.utils.aoa_to_sheet([[`VENDAS EM PARCERIA COM REPRESENTANTES`],[`Representante: ${v.code} - ${v.name}`],[],hdr,...makeRows(v.itemsParceria||[]),[],['','','','','','','','Total',v.totalComParceria||0]]);
+    ws2['!cols']=[{wch:6},{wch:10},{wch:12},{wch:35},{wch:7},{wch:15},{wch:10},{wch:7},{wch:14}];
+    XLSX.utils.book_append_sheet(wb,ws2,'Parceria c∕ Reps');
+    const resumo=[['RESUMO - JULIO (GERENTE)'],['Próprias — Notas',(v.itemsProprio||[]).length],['Próprias — Vendas',v.totalVendasProprio||0],['Próprias — Comissão',v.totalComProprio||0],[],['Parceria — Notas',(v.itemsParceria||[]).length],['Parceria — Vendas',v.totalVendasParceria||0],['Parceria — Comissão',v.totalComParceria||0],[],['Total Notas',v.items.length],['Total Vendas',v.totalVendas],['Comissão Bruta',v.totalCom]];
+    if(discount>0) resumo.push(['Desconto Extra',-discount]);
+    if(credit>0)   resumo.push(['Crédito Extra',credit]);
+    if(v.irrfPct>0) resumo.push([`IRRF (${(v.irrfPct*100).toFixed(2)}%)`,-getIrrfRecalculado(v,discount,credit)]);
+    resumo.push(['VALOR FINAL A PAGAR',finalVal]);
+    const ws3=XLSX.utils.aoa_to_sheet(resumo); ws3['!cols']=[{wch:30},{wch:20}];
+    XLSX.utils.book_append_sheet(wb,ws3,'Resumo');
+  } else {
+    const ws1Data=[[`Representante: ${v.code} - ${v.name}`],[`E-Mail: ${v.email||'—'}`],[],hdr,...makeRows(v.items),[],['','','','','','','','Total',v.totalCom]];
+    if(discount>0) ws1Data.push(['','','','','','','','Desconto',-discount]);
+    if(credit>0)   ws1Data.push(['','','','','','','','Crédito',credit]);
+    if(v.irrfPct>0) ws1Data.push(['','','','','','','',`IRRF (${(v.irrfPct*100).toFixed(2)}%)`,-getIrrfRecalculado(v,discount,credit)]);
+    ws1Data.push(['','','','','','','','FINAL A PAGAR',finalVal]);
+    const ws1=XLSX.utils.aoa_to_sheet(ws1Data); ws1['!cols']=[{wch:6},{wch:10},{wch:12},{wch:35},{wch:7},{wch:15},{wch:10},{wch:10},{wch:14}];
+    XLSX.utils.book_append_sheet(wb,ws1,'Notas Fiscais');
+  }
+  XLSX.writeFile(wb,`Comissao_${safeFileName(v.name)}.xlsx`);
+}
+
+// ═══════════════════════════════════════════════════════════
+//  EXPORT PDF INDIVIDUAL — design limpo (fundo branco)
+// ═══════════════════════════════════════════════════════════
+function exportPDF(e,code) {
+  e.stopPropagation();
+  const drop=document.getElementById('expdrop-'+code);
+  if(drop){drop.classList.remove('open');if(drop.previousElementSibling)drop.previousElementSibling.classList.remove('open');}
+
+  try {
+  const jsPDFCtor = (window.jspdf && window.jspdf.jsPDF) || window.jsPDF;
+  if (!jsPDFCtor) { alert('Biblioteca PDF não carregada. Verifique sua conexão com a internet e recarregue a página.'); return; }
+
+  const {v,discount,credit,discObs,credObs,finalVal}=getVendorExportData(code);
+  const isJulio=v.code===julioCode;
+  const periodo=document.getElementById('periodo-badge').textContent||'';
+  const geradoEm=new Date().toLocaleString('pt-BR');
+  const irrfFinal=getIrrfRecalculado(v,discount,credit);
+
+  const doc=new jsPDFCtor({orientation:'portrait',unit:'mm',format:'a4'});
+
+  const C={
+    title:[180,120,40],dark:[30,30,50],muted:[120,125,140],line:[210,210,215],
+    headBg:[245,246,248],rowAlt:[251,252,253],success:[30,130,80],danger:[180,50,50],
+    orange:[200,110,30],blue:[30,80,160],white:[255,255,255],
+  };
+  const pw=doc.internal.pageSize.getWidth();
+  const ph=doc.internal.pageSize.getHeight();
+  const ML=14, MR=14;
+  let y=18;
+
+  // ── Nome em destaque ──
+  doc.setFont('helvetica','bold');doc.setFontSize(16);doc.setTextColor(...C.title);
+  doc.text(v.name.toUpperCase()+(isJulio?' — GERENTE':''),ML,y);
+  y+=6;
+  doc.setDrawColor(...C.line);doc.setLineWidth(0.3);doc.line(ML,y,pw-MR,y);y+=5;
+
+  doc.setFont('helvetica','normal');doc.setFontSize(8);doc.setTextColor(...C.muted);
+  doc.text(`# ${v.code}  ·  ${v.empresa||'GAR'}  ·  ${v.items.length} notas fiscais${v.email?'  ·  '+v.email:''}`,ML,y);
+  y+=5;
+  const periodoClean=periodo.replace('Período:','').trim();
+  doc.text(`Período: ${periodoClean}  ·  Gerado em: ${geradoEm}`,ML,y);
+  y+=8;
+
+  // ── Tabela de notas ──
+  const thead=[['Emp.','Nota','Data','Cliente','CFOP','Vlr. Total','% Com.','Comissão']];
+  const mkBody=items=>items.map(it=>[
+    it.empCode,it.nota,it.date,
+    it.cliente.length>34?it.cliente.slice(0,33)+'…':it.cliente,
+    it.cfop,fmtBRL(it.vlrTotal),it.pctCom+'%',fmtBRL(it.vlrCom)
+  ]);
+  const tStyle={
+    theme:'plain',
+    showHead:'everyPage',
+    styles:{font:'helvetica',fontSize:7.5,cellPadding:[2.2,3],textColor:C.dark,lineColor:C.line,lineWidth:0.2},
+    headStyles:{fillColor:C.headBg,textColor:C.dark,fontStyle:'bold',fontSize:7.5,lineColor:C.line,lineWidth:0.2},
+    alternateRowStyles:{fillColor:C.rowAlt},
+    columnStyles:{
+      0:{cellWidth:11},1:{cellWidth:18},2:{cellWidth:20},3:{},
+      4:{cellWidth:12},5:{halign:'right',cellWidth:26},6:{halign:'right',cellWidth:14},
+      7:{halign:'right',cellWidth:26,textColor:C.success,fontStyle:'bold'},
+    },
+    didParseCell(d){
+      if(d.section==='body'){
+        const raw=String(d.cell.raw||'');
+        if((d.column.index===7||d.column.index===5)&&raw.startsWith('-'))
+          d.cell.styles.textColor=C.danger;
+      }
+    },
+    margin:{left:ML,right:MR},
+  };
+
+  if(isJulio){
+    doc.setFont('helvetica','bold');doc.setFontSize(8);doc.setTextColor(...C.blue);
+    doc.text('VENDAS PRÓPRIAS',ML,y);
+    doc.setFont('helvetica','normal');doc.setFontSize(7);doc.setTextColor(...C.muted);
+    doc.text(`${(v.itemsProprio||[]).length} notas  ·  Vendas: ${fmtBRL(v.totalVendasProprio||0)}  ·  Comissão: ${fmtBRL(v.totalComProprio||0)}`,ML,y+5);
+    y+=9;
+    doc.autoTable({...tStyle,startY:y,head:thead,body:mkBody(v.itemsProprio||[])});
+    y=doc.lastAutoTable.finalY+10;
+    if(y>ph-60){doc.addPage();y=14;}
+    doc.setFont('helvetica','bold');doc.setFontSize(8);doc.setTextColor(...C.orange);
+    doc.text('VENDAS EM PARCERIA COM REPRESENTANTES',ML,y);
+    doc.setFont('helvetica','normal');doc.setFontSize(7);doc.setTextColor(...C.muted);
+    doc.text(`${(v.itemsParceria||[]).length} notas  ·  Vendas: ${fmtBRL(v.totalVendasParceria||0)}  ·  Comissão: ${fmtBRL(v.totalComParceria||0)}`,ML,y+5);
+    y+=9;
+    doc.autoTable({...tStyle,startY:y,head:thead,body:mkBody(v.itemsParceria||[])});
+  } else {
+    doc.autoTable({...tStyle,startY:y,head:thead,body:mkBody(v.items)});
+  }
+
+  y=doc.lastAutoTable.finalY+10;
+  if(y>ph-70){doc.addPage();y=18;}
+
+  // ── Bloco de totais alinhado à direita ──
+  const labelX=pw-MR-88;
+  const valueX=pw-MR;
+  const lineH=7.5;
+
+  doc.setDrawColor(...C.line);doc.setLineWidth(0.3);doc.line(labelX-4,y-3,pw-MR,y-3);
+
+  const totaisRows=[
+    {label:'Total de Vendas',value:fmtBRL(v.totalVendas),color:C.dark},
+    {label:'Comissão Bruta', value:fmtBRL(v.totalCom),   color:C.dark},
+  ];
+  if(isJulio){
+    totaisRows.push({label:'  Comissão Própria', value:fmtBRL(v.totalComProprio||0), color:C.blue});
+    totaisRows.push({label:'  Comissão Parceria',value:fmtBRL(v.totalComParceria||0),color:C.orange});
+  }
+  if(discount>0){
+    totaisRows.push({label:'Desconto Extra',value:'- '+fmtBRL(discount),color:C.danger});
+    if(discObs) totaisRows.push({label:'  Motivo: '+discObs,value:'',color:C.danger,italic:true,small:true});
+  }
+  if(credit>0){
+    totaisRows.push({label:'Crédito Extra',value:'+ '+fmtBRL(credit),color:C.success});
+    if(credObs) totaisRows.push({label:'  Motivo: '+credObs,value:'',color:C.success,italic:true,small:true});
+  }
+  if(v.irrfPct>0)
+    totaisRows.push({label:`IRRF (${(v.irrfPct*100).toFixed(2)}%)`,value:'- '+fmtBRL(irrfFinal),color:C.danger});
+
+  totaisRows.push({sep:true});
+  totaisRows.push({label:'VALOR FINAL A PAGAR',value:fmtBRL(finalVal),bold:true,color:C.success,big:true});
+  totaisRows.push({sep:true,light:true});
+  totaisRows.push({label:'Total de Notas Fiscais',value:String(v.items.length),color:C.muted});
+
+  totaisRows.forEach(row=>{
+    if(row.sep){
+      doc.setDrawColor(...(row.light?C.line:[190,190,195]));
+      doc.setLineWidth(row.light?0.2:0.5);
+      doc.line(labelX-4,y,pw-MR,y);y+=3;return;
+    }
+    const fs=row.small?7:(row.big?11:8.5);
+    doc.setFont('helvetica',row.italic?'italic':(row.bold?'bold':'normal'));
+    doc.setFontSize(fs);doc.setTextColor(...row.color);
+    doc.text(row.label,labelX,y,{baseline:'middle'});
+    if(row.value){
+      doc.setFont('helvetica',row.bold?'bold':'normal');
+      doc.text(row.value,valueX,y,{align:'right',baseline:'middle'});
+    }
+    y+=row.big?lineH+2:lineH;
+  });
+
+  // ── Paginação ──
+  const totalPages=doc.internal.getNumberOfPages();
+  for(let i=1;i<=totalPages;i++){
+    doc.setPage(i);
+    doc.setDrawColor(...C.line);doc.setLineWidth(0.2);doc.line(ML,ph-9,pw-MR,ph-9);
+    doc.setFont('helvetica','normal');doc.setFontSize(6.5);doc.setTextColor(...C.muted);
+    doc.text(`Relatório de Comissões – ${v.name}`,ML,ph-5);
+    doc.text(`Pág. ${i} / ${totalPages}`,pw-MR,ph-5,{align:'right'});
+  }
+
+  doc.save(`Comissao_${safeFileName(v.name)}.pdf`);
+  } catch(err) { alert('Erro ao gerar PDF: ' + err.message); }
+}
+
+
+
+// ═══════════════════════════════════════════════════════════
+//  RESUMO DE COMISSÕES
+// ═══════════════════════════════════════════════════════════
+function gerarResumo() {
+  const overlay=document.getElementById('resumo-overlay');
+  const body=document.getElementById('resumo-body');
+  const periodo=document.getElementById('periodo-badge').textContent||'';
+  document.getElementById('resumo-periodo-label').textContent=periodo||'Relatório de Comissões';
+  const externos=allVendors.filter(v=>!isInterno(v)).sort((a,b)=>a.name.localeCompare(b.name));
+  const internos=allVendors.filter(v=>isInterno(v)).sort((a,b)=>a.name.localeCompare(b.name));
+  function fmtR(v){return v===0?'<span class="td-zero">—</span>':fmtBRL(v);}
+  let totalExtVenda=0,totalExtCom=0,totalExtDesc=0,totalExtCred=0,totalExtBruto=0,totalExtIr=0,totalExtLiq=0,totalIntVenda=0;
+  const extRows=externos.map(v=>{
+    const adj=adjustments[v.code]||{};
+    const discount=adj.discount||0,credit=adj.credit||0;
+    const irrf=getIrrfRecalculado(v,discount,credit),bruto=v.totalCom-discount+credit,liq=getFinalValue(v,discount,credit);
+    totalExtVenda+=v.totalVendas;totalExtCom+=v.totalCom;totalExtDesc+=discount;totalExtCred+=credit;totalExtBruto+=bruto;totalExtIr+=irrf;totalExtLiq+=liq;
+    return `<tr><td class="td-cod">${v.code}</td><td class="td-name">${v.name}</td><td class="td-juridica">${v.irrfPct>0?'<span class="tag-sim">SIM</span>':'<span class="tag-nao">NÃO</span>'}</td><td class="right td-venda">${fmtBRL(v.totalVendas)}</td><td class="right td-com">${fmtR(v.totalCom)}</td><td class="right td-desc">${discount>0?fmtBRL(discount):'<span class="td-zero">—</span>'}</td><td class="right td-cred">${credit>0?fmtBRL(credit):'<span class="td-zero">—</span>'}</td><td class="right td-bruto">${fmtR(bruto)}</td><td class="right td-ir">${v.irrfPct>0?fmtBRL(irrf):'<span class="td-zero">—</span>'}</td><td class="right td-liq">${fmtBRL(liq)}</td></tr>`;
+  }).join('');
+  const intRows=internos.map(v=>{
+    const venda=(v.code===julioCode&&v.totalVendasProprio!==undefined)?v.totalVendasProprio:v.totalVendas;
+    totalIntVenda+=venda;
+    const isJ=v.code===julioCode;
+    return `<tr><td class="td-cod">${v.code}</td><td class="td-name ${isJ?'gerente':'interno'}">${v.name}${isJ?' <span style="font-size:9px;color:var(--accent2)">(Gerente)</span>':''}</td><td class="td-juridica"><span class="tag-nao">INTERNO</span></td><td class="right td-venda">${fmtBRL(venda)}${isJ?`<div style="font-size:9px;color:var(--muted)">Total NF: ${fmtBRL(v.totalVendas)}</div>`:''}</td><td class="right td-zero" colspan="6">— sem comissão calculada —</td></tr>`;
+  }).join('');
+  const totalGeralVendas=totalExtVenda+totalIntVenda;
+  body.innerHTML=`
+    <div class="resumo-section-title">📊 Representantes Externos — ${externos.length} representante${externos.length!==1?'s':''}</div>
+    <table class="resumo-table"><thead><tr><th>Cód.</th><th>Representante</th><th>IR</th><th class="right">Venda</th><th class="right">Comissão</th><th class="right">Desc.</th><th class="right">Crédito</th><th class="right">Total Bruto</th><th class="right">Desc. IR</th><th class="right">Total Líq.</th></tr></thead>
+    <tbody>${extRows}<tr class="row-total"><td colspan="3">TOTAL REPRESENTANTES</td><td class="right">${fmtBRL(totalExtVenda)}</td><td class="right">${fmtBRL(totalExtCom)}</td><td class="right">${totalExtDesc>0?fmtBRL(totalExtDesc):'—'}</td><td class="right">${totalExtCred>0?fmtBRL(totalExtCred):'—'}</td><td class="right">${fmtBRL(totalExtBruto)}</td><td class="right">${totalExtIr>0?fmtBRL(totalExtIr):'—'}</td><td class="right td-liq">${fmtBRL(totalExtLiq)}</td></tr></tbody></table>
+    <div class="resumo-section-title" style="margin-top:8px">🏢 Vendedores Internos — ${internos.length} vendedor${internos.length!==1?'es':''}</div>
+    <table class="resumo-table"><thead><tr><th>Cód.</th><th>Nome</th><th>Tipo</th><th class="right">Venda (própria)</th><th class="right" colspan="6">Observação</th></tr></thead>
+    <tbody>${intRows}<tr class="row-interno-total"><td colspan="3">TOTAL INTERNOS</td><td class="right">${fmtBRL(totalIntVenda)}</td><td colspan="6" class="right" style="color:var(--muted);font-size:11px;font-weight:400">vendas sem comissão</td></tr></tbody></table>
+    <div class="resumo-total-geral">
+      <div class="rtg-item"><span class="rtg-label">Total Geral de Vendas</span><span class="rtg-value accent">${fmtBRL(totalGeralVendas)}</span></div>
+      <div class="rtg-sep"></div>
+      <div class="rtg-item"><span class="rtg-label">Vendas Representantes</span><span class="rtg-value accent2">${fmtBRL(totalExtVenda)}</span></div>
+      <div class="rtg-sep"></div>
+      <div class="rtg-item"><span class="rtg-label">Vendas Internos (próprias)</span><span class="rtg-value accent2">${fmtBRL(totalIntVenda)}</span></div>
+      <div class="rtg-sep"></div>
+      <div class="rtg-item"><span class="rtg-label">Comissão Bruta</span><span class="rtg-value" style="color:var(--text)">${fmtBRL(totalExtBruto)}</span></div>
+      ${totalExtIr>0?`<div class="rtg-sep"></div><div class="rtg-item"><span class="rtg-label">IRRF Total</span><span class="rtg-value danger">- ${fmtBRL(totalExtIr)}</span></div>`:''}
+      <div class="rtg-sep"></div>
+      <div class="rtg-item"><span class="rtg-label">Total Líquido a Pagar</span><span class="rtg-value success">${fmtBRL(totalExtLiq)}</span></div>
+    </div>`;
+  overlay.classList.add('open');
+}
+function fecharResumo(){document.getElementById('resumo-overlay').classList.remove('open');}
+
+// ═══════════════════════════════════════════════════════════
+//  EXPORT PDF RESUMO (jsPDF + autoTable)
+// ═══════════════════════════════════════════════════════════
+function _buildResumoData() {
+  const externos=allVendors.filter(v=>!isInterno(v)).sort((a,b)=>a.name.localeCompare(b.name));
+  const internos=allVendors.filter(v=>isInterno(v)).sort((a,b)=>a.name.localeCompare(b.name));
+  const periodo=document.getElementById('resumo-periodo-label').textContent||'';
+  let totalExtVenda=0,totalExtCom=0,totalExtDesc=0,totalExtCred=0,totalExtBruto=0,totalExtIr=0,totalExtLiq=0,totalIntVenda=0;
+  const extData=externos.map(v=>{
+    const adj=adjustments[v.code]||{},discount=adj.discount||0,credit=adj.credit||0;
+    const irrf=getIrrfRecalculado(v,discount,credit),bruto=v.totalCom-discount+credit,liq=getFinalValue(v,discount,credit);
+    totalExtVenda+=v.totalVendas;totalExtCom+=v.totalCom;totalExtDesc+=discount;totalExtCred+=credit;totalExtBruto+=bruto;totalExtIr+=irrf;totalExtLiq+=liq;
+    return{code:v.code,name:v.name,ir:v.irrfPct>0,venda:v.totalVendas,com:v.totalCom,desc:discount,cred:credit,bruto,irrf,liq};
+  });
+  const intData=internos.map(v=>{
+    const venda=(v.code===julioCode&&v.totalVendasProprio!==undefined)?v.totalVendasProprio:v.totalVendas;
+    totalIntVenda+=venda;
+    return{code:v.code,name:v.name,venda,totalNF:v.totalVendas,isJulio:v.code===julioCode,vendaPropria:v.totalVendasProprio||0,vendaParceria:v.totalVendasParceria||0};
+  });
+  return{externos:extData,internos:intData,periodo,totalExtVenda,totalExtCom,totalExtDesc,totalExtCred,totalExtBruto,totalExtIr,totalExtLiq,totalIntVenda,totalGeral:totalExtVenda+totalIntVenda};
+}
+
+function exportarResumoPDF() {
+  try {
+  const jsPDFCtor = (window.jspdf && window.jspdf.jsPDF) || window.jsPDF;
+  if (!jsPDFCtor) { alert('Biblioteca PDF não carregada. Verifique sua conexão com a internet e recarregue a página.'); return; }
+  const d=_buildResumoData();
+  const doc=new jsPDFCtor({orientation:'landscape',unit:'mm',format:'a4'});
+  const C={dark:[13,15,26],accent:[200,220,60],white:[255,255,255],muted:[90,96,120],success:[30,122,74],danger:[192,57,43],warn:[139,112,0],blue:[26,82,118],orange:[200,100,30],rowAlt:[248,249,250],totalBg:[255,249,230],intBg:[232,244,253]};
+  const pw=doc.internal.pageSize.getWidth();
+  const gerado=new Date().toLocaleString('pt-BR');
+  doc.setFillColor(...C.dark);doc.rect(0,0,pw,18,'F');
+  doc.setFont('helvetica','bold');doc.setFontSize(14);doc.setTextColor(...C.accent);doc.text('RESUMO DE COMISSÕES',10,11);
+  doc.setFont('helvetica','normal');doc.setFontSize(7);doc.setTextColor(136,153,170);doc.text(`${d.periodo}   ·   Gerado em ${gerado}`,10,16);
+  let y=24;
+  doc.setFont('helvetica','bold');doc.setFontSize(8);doc.setTextColor(...C.muted);
+  doc.text(`REPRESENTANTES EXTERNOS — ${d.externos.length} REPRESENTANTES`,10,y);y+=3;
+  doc.autoTable({
+    startY:y,
+    head:[['Cód.','Representante','IR','Venda','Comissão','Desc.','Crédito','Total Bruto','Desc. IR','Total Líq.']],
+    body:d.externos.map(r=>[r.code,r.name,r.ir?'SIM':'NÃO',fmtBRL(r.venda),fmtBRL(r.com),r.desc>0?fmtBRL(r.desc):'—',r.cred>0?fmtBRL(r.cred):'—',fmtBRL(r.bruto),r.irrf>0?fmtBRL(r.irrf):'—',fmtBRL(r.liq)]),
+    foot:[[{content:'TOTAL REPRESENTANTES',colSpan:3},fmtBRL(d.totalExtVenda),fmtBRL(d.totalExtCom),d.totalExtDesc>0?fmtBRL(d.totalExtDesc):'—',d.totalExtCred>0?fmtBRL(d.totalExtCred):'—',fmtBRL(d.totalExtBruto),d.totalExtIr>0?fmtBRL(d.totalExtIr):'—',fmtBRL(d.totalExtLiq)]],
+    theme:'grid',styles:{font:'helvetica',fontSize:7,cellPadding:2,textColor:[30,30,30]},
+    headStyles:{fillColor:C.dark,textColor:C.white,fontStyle:'bold',fontSize:7},
+    footStyles:{fillColor:C.totalBg,textColor:C.dark,fontStyle:'bold',fontSize:7.5},
+    alternateRowStyles:{fillColor:C.rowAlt},
+    columnStyles:{0:{cellWidth:14,textColor:C.muted},1:{cellWidth:56,fontStyle:'bold'},2:{cellWidth:10,halign:'center'},3:{halign:'right',textColor:C.warn,fontStyle:'bold'},4:{halign:'right'},5:{halign:'right',textColor:C.danger},6:{halign:'right',textColor:C.success},7:{halign:'right',fontStyle:'bold'},8:{halign:'right',textColor:C.danger},9:{halign:'right',textColor:C.success,fontStyle:'bold'}},
+    didParseCell(data){if(data.column.index===2&&data.section==='body'){data.cell.styles.textColor=data.cell.raw==='SIM'?C.success:C.muted;data.cell.styles.fontStyle=data.cell.raw==='SIM'?'bold':'normal';}},
+    margin:{left:10,right:10},
+  });
+  y=doc.lastAutoTable.finalY+8;
+  if(y>doc.internal.pageSize.getHeight()-50){doc.addPage();y=14;}
+  doc.setFont('helvetica','bold');doc.setFontSize(8);doc.setTextColor(...C.muted);
+  doc.text(`VENDEDORES INTERNOS — ${d.internos.length} VENDEDORES`,10,y);y+=3;
+  doc.autoTable({
+    startY:y,
+    head:[['Cód.','Nome','Tipo','Venda Própria','Observação']],
+    body:d.internos.map(r=>[r.code,r.isJulio?r.name+' (Gerente)':r.name,'INTERNO',fmtBRL(r.venda)+(r.isJulio?`\nParceria: ${fmtBRL(r.vendaParceria)}`:''),'— sem comissão calculada —']),
+    foot:[[{content:'TOTAL INTERNOS',colSpan:3},fmtBRL(d.totalIntVenda),'vendas sem comissão']],
+    theme:'grid',styles:{font:'helvetica',fontSize:7,cellPadding:2,textColor:[30,30,30]},
+    headStyles:{fillColor:C.dark,textColor:C.white,fontStyle:'bold',fontSize:7},
+    footStyles:{fillColor:C.intBg,textColor:C.blue,fontStyle:'bold',fontSize:7.5},
+    alternateRowStyles:{fillColor:C.rowAlt},
+    columnStyles:{0:{cellWidth:14,textColor:C.muted},1:{cellWidth:70,fontStyle:'bold',textColor:C.blue},2:{cellWidth:18,halign:'center',textColor:C.muted},3:{halign:'right',fontStyle:'bold',textColor:C.warn},4:{halign:'center',textColor:C.muted,fontStyle:'italic'}},
+    margin:{left:10,right:10},
+  });
+  y=doc.lastAutoTable.finalY+8;
+  if(y>doc.internal.pageSize.getHeight()-35){doc.addPage();y=14;}
+  const totaisItems=[
+    {label:'Total Geral de Vendas',value:fmtBRL(d.totalGeral),color:C.warn},
+    {label:'Vendas Representantes',value:fmtBRL(d.totalExtVenda),color:C.blue},
+    {label:'Vendas Internos',value:fmtBRL(d.totalIntVenda),color:C.blue},
+    {label:'Comissão Bruta',value:fmtBRL(d.totalExtBruto),color:C.dark},
+    ...(d.totalExtIr>0?[{label:'IRRF Total',value:`- ${fmtBRL(d.totalExtIr)}`,color:C.danger}]:[]),
+    {label:'Total Líquido a Pagar',value:fmtBRL(d.totalExtLiq),color:C.success},
+  ];
+  doc.setFillColor(...C.totalBg);doc.setDrawColor(232,176,0);doc.roundedRect(10,y,pw-20,22,2,2,'FD');
+  const colW=(pw-20)/totaisItems.length;
+  totaisItems.forEach((item,i)=>{
+    const x=10+i*colW+colW/2;
+    doc.setFont('helvetica','normal');doc.setFontSize(6.5);doc.setTextColor(...C.muted);doc.text(item.label.toUpperCase(),x,y+7,{align:'center'});
+    doc.setFont('helvetica','bold');doc.setFontSize(9);doc.setTextColor(...item.color);doc.text(item.value,x,y+16,{align:'center'});
+  });
+  const nomePeriodo=d.periodo.replace(/[^a-zA-Z0-9]/g,'_').slice(0,30)||'Resumo';
+  doc.save(`Resumo_Comissoes_${nomePeriodo}.pdf`);
+  } catch(err) { alert('Erro ao gerar PDF do resumo: ' + err.message); }
+}
+
+// ═══════════════════════════════════════════════════════════
+//  EXPORT EXCEL RESUMO
+// ═══════════════════════════════════════════════════════════
+function exportarResumoXLSX() {
+  const d=_buildResumoData();
+  const wb=XLSX.utils.book_new();
+  const extHeader=['Código','Representante','Pessoa Jurídica (IR)','Venda','Comissão','Desconto','Crédito','Total Bruto','Desc. IR','Total Líquido'];
+  const extRows=d.externos.map(r=>[r.code,r.name,r.ir?'SIM':'NÃO',r.venda,r.com,r.desc||0,r.cred||0,r.bruto,r.irrf||0,r.liq]);
+  extRows.push([]);extRows.push(['','TOTAL REPRESENTANTES','',d.totalExtVenda,d.totalExtCom,d.totalExtDesc,d.totalExtCred,d.totalExtBruto,d.totalExtIr,d.totalExtLiq]);
+  const ws1=XLSX.utils.aoa_to_sheet([[`RESUMO DE COMISSÕES — ${d.periodo}`],[`Gerado em: ${new Date().toLocaleString('pt-BR')}`],[],extHeader,...extRows]);
+  ws1['!cols']=[{wch:10},{wch:38},{wch:18},{wch:16},{wch:14},{wch:12},{wch:12},{wch:14},{wch:12},{wch:16}];
+  XLSX.utils.book_append_sheet(wb,ws1,'Representantes');
+  const intHeader=['Código','Nome','Tipo','Venda Própria','Total NF','Venda Parceria','Observação'];
+  const intRows=d.internos.map(r=>[r.code,r.name,'INTERNO',r.venda,r.totalNF,r.vendaParceria||0,r.isJulio?'Gerente — próprias separadas das parcerias':'Sem comissão calculada']);
+  intRows.push([]);intRows.push(['','TOTAL INTERNOS','',d.totalIntVenda,'','','']);
+  const ws2=XLSX.utils.aoa_to_sheet([[`VENDEDORES INTERNOS — ${d.periodo}`],[],intHeader,...intRows]);
+  ws2['!cols']=[{wch:10},{wch:38},{wch:12},{wch:16},{wch:16},{wch:16},{wch:42}];
+  XLSX.utils.book_append_sheet(wb,ws2,'Internos');
+  const ws3=XLSX.utils.aoa_to_sheet([['RESUMO GERAL DE COMISSÕES'],[`Período: ${d.periodo}`],[`Gerado em: ${new Date().toLocaleString('pt-BR')}`],[],['REPRESENTANTES EXTERNOS'],['Qtd. Representantes',d.externos.length],['Total de Vendas',d.totalExtVenda],['Comissão Bruta',d.totalExtCom],['Descontos',d.totalExtDesc],['Créditos',d.totalExtCred],['Total Bruto a Pagar',d.totalExtBruto],['IRRF Total',d.totalExtIr],['TOTAL LÍQUIDO A PAGAR',d.totalExtLiq],[],['VENDEDORES INTERNOS'],['Qtd. Vendedores',d.internos.length],['Total de Vendas (próprias)',d.totalIntVenda],[],['CONSOLIDADO'],['Total Geral de Vendas',d.totalGeral],['Total Comissões (Líquido)',d.totalExtLiq]]);
+  ws3['!cols']=[{wch:30},{wch:20}];
+  XLSX.utils.book_append_sheet(wb,ws3,'Resumo Geral');
+  const nomePeriodo=d.periodo.replace(/[^a-zA-Z0-9]/g,'_').slice(0,30)||'Resumo';
+  XLSX.writeFile(wb,`Resumo_Comissoes_${nomePeriodo}.xlsx`);
+}
+</script>
+
+
+</body></html>
